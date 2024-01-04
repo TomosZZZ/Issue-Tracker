@@ -13,8 +13,8 @@ const Navbar = () => {
 	]
 	return (
 		<nav className='flex h-14 border-b space-x-8 px-8 mb-5 items-center'>
-			<Link className='text-xl' href='/'>
-				<FaBug />
+			<Link className='text-2xl' href='/'>
+				<FaBug className='text-violet-600' />
 			</Link>
 			<ul className='flex space-x-6'>
 				{links.map(link => (
@@ -22,7 +22,7 @@ const Navbar = () => {
 						className={classNames({
 							'text-zinc-900': currentPath === link.path,
 							'text-zinc-500': currentPath !== link.path,
-							'hover:text-zinc-800 transition-colors': true,
+							'hover:text-zinc-800 transition-colors font-medium text-xl': true,
 						})}
 						key={link.path}
 						href={link.path}>
