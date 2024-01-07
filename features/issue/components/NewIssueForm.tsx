@@ -2,7 +2,7 @@
 import React from 'react'
 import { Form } from '@/components/ui/form'
 
-import { createIssueSchema } from '@/types/validationSchemas'
+import { createIssueSchema } from '@/features/issue/types/validationSchemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
