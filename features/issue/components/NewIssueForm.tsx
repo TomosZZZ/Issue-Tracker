@@ -18,6 +18,8 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { createIssue } from '@/shared/utils'
 
 type IssueFormSchema = z.infer<typeof createIssueSchema>
 export const NewIssueForm = () => {
@@ -33,28 +35,26 @@ export const NewIssueForm = () => {
 		formState: { errors },
 	} = form
 
-	const onSubmit = async (data: IssueFormSchema) => {
-		const response = await fetch('/api/issues', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
-		})
-		const issue = await response.json()
-		if (!issue.description._errors || !issue.title._errors) {
+	const createIssueMutation = useMutation({
+		mutationFn: createIssue,
+		onSuccess: () => {
 			toast({
 				title: 'Success!',
 				description: 'Creating issue succeed.',
 			})
 			router.replace('/issues')
-		} else {
+		},
+		onError: () => {
 			toast({
 				title: 'Error',
 				description: 'Something went wrong',
 				variant: 'destructive',
 			})
-		}
+		},
+	})
+
+	const onSubmit = async (data: IssueFormSchema) => {
+		createIssueMutation.mutate(data)
 	}
 
 	return (
