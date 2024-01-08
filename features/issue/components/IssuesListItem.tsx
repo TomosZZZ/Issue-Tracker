@@ -40,22 +40,22 @@ export const IssuesListItem = (props: { issue: IssueModel }) => {
 	return (
 		<AccordionItem value={`${issue.id}`}>
 			<AccordionTrigger>
-				<div className='flex justify-between w-[80%]'>
-					<h2>{issue.title}</h2>
-					<h3>{issue.status}</h3>
+				<div className='flex flex-col sm:flex-row text-left justify-between w-[80%]'>
+					<h2 className='text-sm'>{issue.title}</h2>
+					<h3 className='text-sm'>{issue.status}</h3>
 				</div>
 			</AccordionTrigger>
 			<AccordionContent>
 				<div className='flex justify-between '>
-					<div className='w-[80%]'>
+					<div className=' text-sm w-[80%]'>
 						<p>{issue.description}</p>
 					</div>
 
 					<div>
 						<Button
 							onClick={deleteIssueHandler}
-							className=' bg-red-600 hover:bg-red-700'>
-							<FaRegTrashAlt className='text-xl font-bold' />
+							className=' bg-red-600 hover:bg-red-700 py-2 px-3'>
+							<FaRegTrashAlt className='sm:text-xltext-sm font-bold' />
 						</Button>
 					</div>
 				</div>

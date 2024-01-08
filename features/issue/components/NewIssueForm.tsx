@@ -58,7 +58,7 @@ export const NewIssueForm = () => {
 	}
 
 	return (
-		<Card className='w-[60%] flex justify-center shadow-xl shadow-violet-200'>
+		<Card className='w-[80%] flex justify-center shadow-xl shadow-violet-200 lg:w-[60%]'>
 			<Form {...form}>
 				<form
 					className='p-4 w-3/4 flex flex-col space-y-8 '
@@ -69,11 +69,16 @@ export const NewIssueForm = () => {
 						defaultValue={''}
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel className='text-lg' htmlFor='title'>
+								<FormLabel className='text-md sm:text-lg' htmlFor='title'>
 									Title
 								</FormLabel>
 								<FormControl>
-									<Input id='title' placeholder='Issue Title:' {...field} />
+									<Input
+										id='title'
+										className='text-xs sm:text-lg'
+										placeholder='Issue Title:'
+										{...field}
+									/>
 								</FormControl>
 								{errors.title && (
 									<p className=' text-red-600 text-sm font-light'>{`${errors.title.message}`}</p>
@@ -87,12 +92,13 @@ export const NewIssueForm = () => {
 						defaultValue={''}
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel className='text-lg' htmlFor='description'>
+								<FormLabel className='text-md sm:text-lg' htmlFor='description'>
 									Description
 								</FormLabel>
 								<FormControl>
 									<Textarea
 										id='description'
+										className='text-xs sm:text-lg'
 										placeholder='Issue Description:'
 										{...field}
 									/>
@@ -105,7 +111,7 @@ export const NewIssueForm = () => {
 					/>
 					<div className='text-center mt-4'>
 						<Button
-							className=' bg-violet-600 text-white text-lg font-medium hover:bg-violet-800'
+							className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 							type='submit'
 							variant={'secondary'}>
 							Create

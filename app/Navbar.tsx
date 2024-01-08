@@ -12,8 +12,8 @@ const Navbar = () => {
 		{ label: 'Issues', path: '/issues' },
 	]
 	return (
-		<nav className='flex h-14 border-b space-x-8 px-8 mb-5 items-center'>
-			<Link className='text-2xl' href='/'>
+		<nav className='flex h-14 border-b sm:space-x-8 space-x-4 px-2 sm:px-8 mb-5 items-center'>
+			<Link className='text-2xl ' href='/'>
 				<FaBug className='text-violet-600' />
 			</Link>
 			<ul className='flex space-x-6'>
@@ -26,7 +26,7 @@ const Navbar = () => {
 						})}
 						key={link.path}
 						href={link.path}>
-						<li>{link.label}</li>
+						<li className='sm:text-2xl text-lg'>{link.label}</li>
 					</Link>
 				))}
 			</ul>

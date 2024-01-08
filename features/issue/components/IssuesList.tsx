@@ -28,7 +28,7 @@ export const IssuesList = () => {
 		})
 	}
 	return (
-		<div className='px-8 py-6'>
+		<div className='sm:px-8 sm:py-6 p-2 '>
 			<h1 className='text-2xl font-bold text-center mb-5'>Issues</h1>
 			{isLoading ? (
 				<p>Loading...</p>
