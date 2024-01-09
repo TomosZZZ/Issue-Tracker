@@ -3,10 +3,8 @@ import { z } from 'zod'
 
 type IssueFormSchema = z.infer<typeof createIssueSchema>
 
-const API_PATH = process.env.NEXT_PUBLIC_API_PATH
-
 export const createIssue = async (data: IssueFormSchema) => {
-	const response = await fetch(`${API_PATH}/api/issues`, {
+	const response = await fetch(`/api/issues`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
