@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { createIssue } from './createIssue'
 import { useToast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 export const useCreateIssue = () => {
 	const router = useRouter()
 	const { toast } = useToast()
