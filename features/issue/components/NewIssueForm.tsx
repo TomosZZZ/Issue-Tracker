@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import { Form } from '@/components/ui/form'
-
 import { createIssueSchema } from '@/features/issue/types/validationSchemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,42 +15,23 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/navigation'
-import { useMutation } from '@tanstack/react-query'
-import { createIssue } from '@/shared/utils'
+import { useCreateIssue } from '../api'
 
 type IssueFormSchema = z.infer<typeof createIssueSchema>
+
 export const NewIssueForm = () => {
+
 	const form = useForm<IssueFormSchema>({
 		resolver: zodResolver(createIssueSchema),
 	})
 
-	const { toast } = useToast()
-	const router = useRouter()
 	const {
 		handleSubmit,
 		control,
 		formState: { errors },
 	} = form
 
-	const createIssueMutation = useMutation({
-		mutationFn: createIssue,
-		onSuccess: () => {
-			toast({
-				title: 'Success!',
-				description: 'Creating issue succeed.',
-			})
-			router.replace('/issues')
-		},
-		onError: () => {
-			toast({
-				title: 'Error',
-				description: 'Something went wrong',
-				variant: 'destructive',
-			})
-		},
-	})
+	const createIssueMutation = useCreateIssue()
 
 	const onSubmit = async (data: IssueFormSchema) => {
 		createIssueMutation.mutate(data)

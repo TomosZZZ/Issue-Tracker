@@ -7,33 +7,12 @@ import {
 import { Button } from '@/components/ui/button'
 import { IssueModel } from '@/types/IssueModel'
 import { FaRegTrashAlt } from 'react-icons/fa'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteIssue } from '@/shared/utils'
-import { useToast } from '@/components/ui/use-toast'
+import { useDeleteIssue } from '@/shared/api/issues'
 
 export const IssuesListItem = (props: { issue: IssueModel }) => {
 	const { issue } = props
-	const { toast } = useToast()
-	const queryClient = useQueryClient()
 
-	const deleteIssueMutation = useMutation({
-		mutationFn: deleteIssue,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['issues'] })
-			toast({
-				title: 'Success!',
-				description: 'Deleting issue succeed.',
-			})
-		},
-		onError: () => {
-			toast({
-				title: 'Error',
-				description: 'Something went wrong',
-				variant: 'destructive',
-			})
-		},
-	})
-
+	const deleteIssueMutation = useDeleteIssue()
 	const deleteIssueHandler = () => {
 		deleteIssueMutation.mutate(issue.id)
 	}

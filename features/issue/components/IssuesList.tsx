@@ -1,23 +1,13 @@
 'use client'
 
 import React from 'react'
-import { getIssues } from '@/shared/utils'
 import { Accordion } from '@/components/ui/accordion'
-
 import { IssuesListItem } from './IssuesListItem'
-import { useQuery } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
+import { useGetIssues } from '@/shared/api/issues'
 
 export const IssuesList = () => {
-	const {
-		data: issues,
-		isLoading,
-		isError,
-	} = useQuery({
-		queryKey: ['issues'],
-		queryFn: getIssues,
-	})
-
+	const { data: issues, isLoading, isError } = useGetIssues()
 	const { toast } = useToast()
 
 	if (isError) {
