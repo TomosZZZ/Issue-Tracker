@@ -1,11 +1,11 @@
 'use client'
 import React from 'react'
-import { Form } from '@/components/ui/form'
-import { createIssueSchema } from '@/features/issue/schemas/createIssueSchema'
+import { editIssueSchema } from '@/features/issue/schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
+	Form,
 	FormControl,
 	FormField,
 	FormItem,
@@ -15,12 +15,19 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import {
+	Select,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+} from '@/components/ui/select'
 
-type IssueFormSchema = z.infer<typeof createIssueSchema>
+type IssueFormSchema = z.infer<typeof editIssueSchema>
 
-export const NewIssueForm = () => {
+export const EditIssueForm = () => {
 	const form = useForm<IssueFormSchema>({
-		resolver: zodResolver(createIssueSchema),
+		resolver: zodResolver(editIssueSchema),
 	})
 
 	const {
@@ -29,10 +36,12 @@ export const NewIssueForm = () => {
 		formState: { errors },
 	} = form
 
-	const onSubmit = async (data: IssueFormSchema) => {}
+	const onSubmit = async (data: IssueFormSchema) => {
+		console.log(data)
+	}
 
 	return (
-		<Card className='w-[80%] flex justify-center shadow-xl shadow-violet-200 lg:w-[60%]'>
+		<Card className='w-[80%]  flex justify-center shadow-xl shadow-violet-200 lg:w-[60%]'>
 			<Form {...form}>
 				<form
 					className='p-4 w-3/4 flex flex-col space-y-8 '
@@ -79,6 +88,36 @@ export const NewIssueForm = () => {
 								</FormControl>
 								{errors.description && (
 									<p className=' text-red-600 text-sm font-light'>{`${errors.description.message}`}</p>
+								)}
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={control}
+						name='status'
+						defaultValue={'OPEN'}
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className='text-md sm:text-lg' htmlFor='title'>
+									Status
+								</FormLabel>
+								<FormControl>
+									<Select
+										onValueChange={field.onChange}
+										defaultValue={field.value}>
+										<SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
+
+										<SelectContent>
+											<SelectItem value='OPEN'>OPEN</SelectItem>
+											<SelectItem value='IN_PROGRESS'>IN_PROGRESS</SelectItem>
+											<SelectItem value='CLOSED'>CLOSED</SelectItem>
+										</SelectContent>
+									</Select>
+								</FormControl>
+								{errors.title && (
+									<p className=' text-red-600 text-sm font-light'>{`${errors.title.message}`}</p>
 								)}
 							</FormItem>
 						)}

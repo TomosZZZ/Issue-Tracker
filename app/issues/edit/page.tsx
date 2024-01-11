@@ -1,7 +1,7 @@
 import { EditIssueForm } from '@/features/issue/components'
 import React from 'react'
 
-const IssuesPage = () => {
+const EditIssuePage = () => {
 	return (
 		<div className='flex items-center justify-center'>
 			<EditIssueForm />
@@ -9,4 +9,4 @@ const IssuesPage = () => {
 	)
 }
 
-export default IssuesPage
+export default EditIssuePage
