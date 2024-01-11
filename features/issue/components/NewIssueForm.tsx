@@ -20,7 +20,6 @@ import { useCreateIssue } from '../api'
 type IssueFormSchema = z.infer<typeof createIssueSchema>
 
 export const NewIssueForm = () => {
-
 	const form = useForm<IssueFormSchema>({
 		resolver: zodResolver(createIssueSchema),
 	})

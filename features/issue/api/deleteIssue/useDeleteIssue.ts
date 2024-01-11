@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteIssue } from '@/shared/api/issues'
+import { deleteIssue } from './deleteIssue'
 import { useToast } from '@/components/ui/use-toast'
 
 export const useDeleteIssue = () => {

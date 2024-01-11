@@ -1,1 +1,3 @@
-export * from './useCreateIssue'
+export * from './createIssue'
+export * from './deleteIssue'
+export * from './getIssues'

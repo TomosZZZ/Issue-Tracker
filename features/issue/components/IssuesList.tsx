@@ -4,7 +4,7 @@ import React from 'react'
 import { Accordion } from '@/components/ui/accordion'
 import { IssuesListItem } from './IssuesListItem'
 import { useToast } from '@/components/ui/use-toast'
-import { useGetIssues } from '@/shared/api/issues'
+import { useGetIssues } from '../api'
 
 export const IssuesList = () => {
 	const { data: issues, isLoading, isError } = useGetIssues()
