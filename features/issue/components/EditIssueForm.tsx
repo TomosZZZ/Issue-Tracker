@@ -25,6 +25,7 @@ import {
 import { useSearchParams } from 'next/navigation'
 import { useGetIssue } from '../api/getIssue'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { useEditIssue } from '../api/editIssue'
 
 type IssueFormSchema = z.infer<typeof editIssueSchema>
 
@@ -45,10 +46,11 @@ export const EditIssueForm = () => {
 	} = form
 
 	const { data, isLoading, isError, error } = useGetIssue(intIssueId)
+	const editIssueMutation = useEditIssue()
 	const issue = data?.issue
 
 	const onSubmit = async (data: IssueFormSchema) => {
-		console.log(data)
+		editIssueMutation.mutate({ editedIssue: data, issueId: intIssueId })
 	}
 	if (!issueId) {
 		return <h1>Id param in url is missing</h1>
@@ -153,7 +155,8 @@ export const EditIssueForm = () => {
 							<Button
 								className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 								type='submit'
-								variant={'secondary'}>
+								variant={'secondary'}
+								disabled={editIssueMutation.isPending}>
 								Update
 							</Button>
 						</div>
