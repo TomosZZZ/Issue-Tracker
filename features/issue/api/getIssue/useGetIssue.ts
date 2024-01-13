@@ -3,7 +3,7 @@ import { getIssue } from './getIssue'
 
 export const useGetIssue = (id: number) => {
 	const getIssueQuery = useQuery({
-		queryKey: ['issues	', id],
+		queryKey: ['issues', id],
 		queryFn: () => {
 			const issue = getIssue(id)
 			return issue

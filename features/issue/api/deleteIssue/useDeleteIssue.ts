@@ -8,8 +8,8 @@ export const useDeleteIssue = () => {
 
 	const deleteIssueMutation = useMutation({
 		mutationFn: deleteIssue,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['issues'] })
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({ queryKey: ['issues'], exact: true })
 			toast({
 				title: 'Success!',
 				description: 'Deleting issue succeed.',

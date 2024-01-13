@@ -1,4 +1,5 @@
 export type IssueModel = {
+	[x: string]: any
 	id: number
 	title: string
 	description: string
@@ -8,7 +9,7 @@ export type IssueModel = {
 }
 
 enum Status {
-	OPEN,
-	IN_PROGRESS,
-	CLOSED,
+	OPEN = 'OPEN',
+	IN_PROGRESS = 'IN_PROGRESS',
+	CLOSED = 'CLOSED',
 }

@@ -5,6 +5,7 @@ import { Accordion } from '@/components/ui/accordion'
 import { IssuesListItem } from './IssuesListItem'
 import { useToast } from '@/components/ui/use-toast'
 import { useGetIssues } from '../api'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export const IssuesList = () => {
 	const { data: issues, isLoading, isError } = useGetIssues()
@@ -21,7 +22,9 @@ export const IssuesList = () => {
 		<div className='sm:px-8 sm:py-6 p-2 '>
 			<h1 className='text-2xl font-bold text-center mb-5'>Issues</h1>
 			{isLoading ? (
-				<p>Loading...</p>
+				<div className='p-5 flex  justify-center'>
+					<LoadingSpinner size={35} />
+				</div>
 			) : (
 				<Accordion type='single' collapsible>
 					{Array.isArray(issues) &&

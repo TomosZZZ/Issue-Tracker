@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { useCreateIssue } from '../api'
 
 type IssueFormSchema = z.infer<typeof createIssueSchema>
 
@@ -28,8 +29,10 @@ export const NewIssueForm = () => {
 		control,
 		formState: { errors },
 	} = form
-
-	const onSubmit = async (data: IssueFormSchema) => {}
+	const createIssueMutation = useCreateIssue()
+	const onSubmit = async (data: IssueFormSchema) => {
+		createIssueMutation.mutate(data)
+	}
 
 	return (
 		<Card className='w-[80%] flex justify-center shadow-xl shadow-violet-200 lg:w-[60%]'>
@@ -85,6 +88,7 @@ export const NewIssueForm = () => {
 					/>
 					<div className='text-center mt-4'>
 						<Button
+							disabled={createIssueMutation.isPending}
 							className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 							type='submit'
 							variant={'secondary'}>

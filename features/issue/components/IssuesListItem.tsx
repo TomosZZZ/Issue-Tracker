@@ -32,6 +32,7 @@ export const IssuesListItem = (props: { issue: IssueModel }) => {
 
 					<div>
 						<Button
+							disabled={deleteIssueMutation.isPending}
 							onClick={deleteIssueHandler}
 							className=' bg-red-600 hover:bg-red-700 py-2 px-3'>
 							<FaRegTrashAlt className='sm:text-xltext-sm font-bold' />
