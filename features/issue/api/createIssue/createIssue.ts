@@ -1,4 +1,4 @@
-import { CreateIssueSchema } from '@/features/issue'
+import { CreateIssueSchema } from '../../schemas'
 import { z } from 'zod'
 
 type IssueFormSchema = z.infer<typeof CreateIssueSchema>

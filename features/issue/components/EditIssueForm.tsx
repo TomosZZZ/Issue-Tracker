@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { EditIssueSchema } from '@/features/issue/schemas'
+import { EditIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'

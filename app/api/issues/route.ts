@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
-import { CreateIssueSchema } from '../../../features/issue/schemas'
+import { CreateIssueSchema } from '@/features/issue'
 
 export const POST = async (request: NextRequest) => {
 	const body = await request.json()

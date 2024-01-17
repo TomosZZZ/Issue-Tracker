@@ -1,4 +1,4 @@
-import { EditIssueSchema } from '@/features/issue/schemas'
+import { EditIssueSchema } from '@/features/issue'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
 import { Status } from '@/features/issue/types/IssueModel'
