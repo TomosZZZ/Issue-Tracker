@@ -6,7 +6,7 @@ export const useEditIssue = () => {
 	const router = useRouter()
 	const { toast } = useToast()
 
-	const editIssueMutation = useMutation({
+	return useMutation({
 		mutationFn: editIssue,
 		onSuccess: () => {
 			toast({
@@ -15,14 +15,12 @@ export const useEditIssue = () => {
 			})
 			router.replace('/issues')
 		},
-		onError: () => {
+		onError: error => {
 			toast({
 				title: 'Error',
-				description: 'Something went wrong',
+				description: error.message,
 				variant: 'destructive',
 			})
 		},
 	})
-
-	return editIssueMutation
 }

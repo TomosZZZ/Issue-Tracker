@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
 
-export const GET = async (request: NextRequest) => {
-	const id = parseInt(request.url.split('/').slice(-1)[0])
+export const GET = async (
+	request: NextRequest,
+	{ params }: { params: { id: string } }
+) => {
+	const id = parseInt(params.id)
 
 	if (isNaN(id)) {
 		return NextResponse.json(

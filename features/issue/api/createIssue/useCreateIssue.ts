@@ -15,14 +15,14 @@ export const useCreateIssue = () => {
 			})
 			router.replace('/issues')
 		},
-		onError: () => {
+		onError: error => {
 			toast({
 				title: 'Error',
-				description: 'Something went wrong',
+				description: error.message,
 				variant: 'destructive',
 			})
 		},
 	})
-    
+
 	return createIssueMutation
 }

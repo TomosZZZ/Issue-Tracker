@@ -1,4 +1,4 @@
-import { IssueModel } from '@/types/IssueModel'
+import { IssueModel } from '@/features/issue/types/IssueModel'
 
 export const getIssues = async () => {
 	const response = await fetch(`/api/issues`)

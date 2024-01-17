@@ -1,7 +1,7 @@
-import { createIssueSchema } from '@/features/issue'
+import { CreateIssueSchema } from '@/features/issue'
 import { z } from 'zod'
 
-type IssueFormSchema = z.infer<typeof createIssueSchema>
+type IssueFormSchema = z.infer<typeof CreateIssueSchema>
 
 export const createIssue = async (data: IssueFormSchema) => {
 	const response = await fetch(`/api/issues`, {
@@ -11,6 +11,8 @@ export const createIssue = async (data: IssueFormSchema) => {
 		},
 		body: JSON.stringify(data),
 	})
-	const issue = await response.json()
-	return issue
+	if (!response.ok) {
+		throw new Error(response.statusText)
+	}
+	return await response.json()
 }

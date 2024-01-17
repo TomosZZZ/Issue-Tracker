@@ -1,5 +1,3 @@
-
-
 export const deleteIssue = async (id: number) => {
 	const response = await fetch(`/api/issues`, {
 		method: 'DELETE',
@@ -8,6 +6,9 @@ export const deleteIssue = async (id: number) => {
 		},
 		body: JSON.stringify({ id }),
 	})
+	if (!response.ok) {
+		throw new Error(response.statusText)
+	}
 	const issue = await response.json()
 	return issue
 }

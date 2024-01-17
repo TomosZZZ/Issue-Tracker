@@ -1,25 +1,36 @@
-import { editIssueSchema } from '@/features/issue/schemas'
+import { EditIssueSchema } from '@/features/issue/schemas'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
-import { z } from 'zod'
-import { Status } from '@prisma/client'
+import { Status } from '@/features/issue/types/IssueModel'
+import { ZodError } from 'zod'
 
-export const PATCH = async (request: NextRequest) => {
-	const id = parseInt(request.url.split('/').slice(-1)[0])
-	const body = (await request.json()) as {
-		issue: z.infer<typeof editIssueSchema>
-	}
-	const editedIssue = body.issue
+export const PATCH = async (
+	request: NextRequest,
+	{ params }: { params: { id: string } }
+) => {
+	const id = parseInt(params.id)
+	try {
+		const body = await request.json()
+		const issue = EditIssueSchema.parse(body.issue)
 
-	if (isNaN(id)) {
+		if (isNaN(id)) {
+			return NextResponse.json(
+				{},
+				{ status: 400, statusText: `Id: '${id}' is not a number` }
+			)
+		}
+		const editedIssue = await prisma.issue.update({
+			where: { id },
+			data: { ...issue, status: issue.status as Status },
+		})
+		return NextResponse.json({ editedIssue }, { status: 200 })
+	} catch (e) {
+		const { issues } = e as ZodError
+
+		const errorMsgs = issues.map(issue => issue.message)
 		return NextResponse.json(
 			{},
-			{ status: 400, statusText: `Id: '${id}' is not a number` }
+			{ status: 400, statusText: errorMsgs.join(', ') }
 		)
 	}
-	const issue = await prisma.issue.update({
-		where: { id },
-		data: { ...editedIssue, status: Status[editedIssue.status] },
-	})
-	return NextResponse.json({ issue }, { status: 200 })
 }

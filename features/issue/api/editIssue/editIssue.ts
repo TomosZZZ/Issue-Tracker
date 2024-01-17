@@ -1,22 +1,23 @@
-import { editIssueSchema } from '@/features/issue'
+import { EditIssueSchema } from '@/features/issue'
 import { z } from 'zod'
 
-type EditIssueFormSchema = z.infer<typeof editIssueSchema>
+type EditIssueFormSchema = z.infer<typeof EditIssueSchema>
 
-export const editIssue = async (data: {
+interface EditIssueProps {
 	editedIssue: EditIssueFormSchema
 	issueId: number
-}) => {
-	const response = await fetch(`/api/issues/edit/${data.issueId}`, {
+}
+
+export const editIssue = async ({ editedIssue, issueId }: EditIssueProps) => {
+	const response = await fetch(`/api/issues/edit/${issueId}`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ issue: data.editedIssue }),
+		body: JSON.stringify({ issue: editedIssue }),
 	})
 	if (!response.ok) {
 		throw new Error(response.statusText)
 	}
-	const editedIssue = await response.json()
-	return editedIssue
+	return response.json()
 }

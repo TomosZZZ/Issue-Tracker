@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { editIssueSchema } from '@/features/issue/schemas'
+import { EditIssueSchema } from '@/features/issue/schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -27,11 +27,11 @@ import { useGetIssue } from '../api/getIssue'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useEditIssue } from '../api/editIssue'
 
-type IssueFormSchema = z.infer<typeof editIssueSchema>
+type IssueFormSchema = z.infer<typeof EditIssueSchema>
 
 export const EditIssueForm = () => {
 	const form = useForm<IssueFormSchema>({
-		resolver: zodResolver(editIssueSchema),
+		resolver: zodResolver(EditIssueSchema),
 	})
 
 	const searchParams = useSearchParams()
@@ -46,11 +46,11 @@ export const EditIssueForm = () => {
 	} = form
 
 	const { data, isLoading, isError, error } = useGetIssue(intIssueId)
-	const editIssueMutation = useEditIssue()
+	const { mutate, isPending } = useEditIssue()
 	const issue = data?.issue
 
 	const onSubmit = async (data: IssueFormSchema) => {
-		editIssueMutation.mutate({ editedIssue: data, issueId: intIssueId })
+		mutate({ editedIssue: data, issueId: intIssueId })
 	}
 	if (!issueId) {
 		return <h1>Id param in url is missing</h1>
@@ -156,7 +156,7 @@ export const EditIssueForm = () => {
 								className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 								type='submit'
 								variant={'secondary'}
-								disabled={editIssueMutation.isPending}>
+								disabled={isPending}>
 								Update
 							</Button>
 						</div>
