@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { IssueModel } from '@/features/issue/types/IssueModel'
 import { FaRegTrashAlt, FaEdit } from 'react-icons/fa'
-import { useDeleteIssue } from '../api'
+import { useDeleteIssue } from '../../api'
 import Link from 'next/link'
 
 export const IssuesListItem = (props: { issue: IssueModel }) => {

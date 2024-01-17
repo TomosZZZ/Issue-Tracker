@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { IssuesList } from '@/features/issue/components/IssuesList'
+import { IssuesList } from '@/features/issue/components/issuesList'
 import Link from 'next/link'
 import React from 'react'
 
