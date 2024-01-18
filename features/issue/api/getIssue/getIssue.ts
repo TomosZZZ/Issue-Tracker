@@ -1,4 +1,4 @@
-import { IssueModel } from '@/types/IssueModel'
+import { Issue } from '@/features/issue/types/Issue'
 
 export const getIssue = async (id: number) => {
 	const response = await fetch(`/api/issues/${id}`)
@@ -7,6 +7,5 @@ export const getIssue = async (id: number) => {
 		throw new Error(response.statusText)
 	}
 
-	const issue = (await response.json()) as { issue: IssueModel }
-	return issue
+	return (await response.json()) as { issue: Issue }
 }

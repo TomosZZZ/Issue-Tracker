@@ -1,5 +1,4 @@
-export type IssueModel = {
-	[x: string]: any
+export type Issue = {
 	id: number
 	title: string
 	description: string
@@ -8,7 +7,7 @@ export type IssueModel = {
 	updatedAt: Date
 }
 
-enum Status {
+export enum Status {
 	OPEN = 'OPEN',
 	IN_PROGRESS = 'IN_PROGRESS',
 	CLOSED = 'CLOSED',

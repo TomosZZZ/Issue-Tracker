@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { editIssueSchema } from '@/features/issue/schemas'
+import { EditIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -25,12 +25,13 @@ import {
 import { useSearchParams } from 'next/navigation'
 import { useGetIssue } from '../api/getIssue'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { useEditIssue } from '../api/editIssue'
 
-type IssueFormSchema = z.infer<typeof editIssueSchema>
+type EditIssueFormData = z.infer<typeof EditIssueSchema>
 
 export const EditIssueForm = () => {
-	const form = useForm<IssueFormSchema>({
-		resolver: zodResolver(editIssueSchema),
+	const form = useForm<EditIssueFormData>({
+		resolver: zodResolver(EditIssueSchema),
 	})
 
 	const searchParams = useSearchParams()
@@ -45,10 +46,11 @@ export const EditIssueForm = () => {
 	} = form
 
 	const { data, isLoading, isError, error } = useGetIssue(intIssueId)
+	const { mutate, isPending } = useEditIssue()
 	const issue = data?.issue
 
-	const onSubmit = async (data: IssueFormSchema) => {
-		console.log(data)
+	const onSubmit = async (data: EditIssueFormData) => {
+		mutate({ editedIssue: data, issueId: intIssueId })
 	}
 	if (!issueId) {
 		return <h1>Id param in url is missing</h1>
@@ -70,6 +72,7 @@ export const EditIssueForm = () => {
 					<form
 						className='p-4 w-3/4 flex flex-col space-y-8 '
 						onSubmit={handleSubmit(onSubmit)}>
+						<h1 className='text-2xl text-center font-bold '>Edit issue</h1>
 						<FormField
 							control={control}
 							name='title'
@@ -153,7 +156,8 @@ export const EditIssueForm = () => {
 							<Button
 								className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 								type='submit'
-								variant={'secondary'}>
+								variant={'secondary'}
+								disabled={isPending}>
 								Update
 							</Button>
 						</div>

@@ -1,17 +1,17 @@
 import { useMutation } from '@tanstack/react-query'
-import { createIssue } from './createIssue'
+import { editIssue } from './editIssue'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
-export const useCreateIssue = () => {
+export const useEditIssue = () => {
 	const router = useRouter()
 	const { toast } = useToast()
 
-	const createIssueMutation = useMutation({
-		mutationFn: createIssue,
+	return useMutation({
+		mutationFn: editIssue,
 		onSuccess: () => {
 			toast({
 				title: 'Success!',
-				description: 'Creating issue succeed.',
+				description: 'Editing issue succeed.',
 			})
 			router.replace('/issues')
 		},
@@ -23,6 +23,4 @@ export const useCreateIssue = () => {
 			})
 		},
 	})
-
-	return createIssueMutation
 }

@@ -1,3 +1,3 @@
 export * from './NewIssueForm'
-export * from './IssuesList'
+export * from './issuesList'
 export * from './EditIssueForm'

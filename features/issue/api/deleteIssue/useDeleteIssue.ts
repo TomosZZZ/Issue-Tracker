@@ -15,10 +15,10 @@ export const useDeleteIssue = () => {
 				description: 'Deleting issue succeed.',
 			})
 		},
-		onError: () => {
+		onError: error => {
 			toast({
 				title: 'Error',
-				description: 'Something went wrong',
+				description: error.message,
 				variant: 'destructive',
 			})
 		},

@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
-import { createIssueSchema } from '../../../features/issue/schemas/createIssueSchema'
+import { CreateIssueSchema } from '@/features/issue'
 
 export const POST = async (request: NextRequest) => {
 	const body = await request.json()
-	const validation = createIssueSchema.safeParse(body)
+	const validation = CreateIssueSchema.safeParse(body)
 
 	if (!validation.success) {
-		return NextResponse.json(validation.error.format(), { status: 400 })
+		const errorMsgs = validation.error.issues.map(issue => issue.message)
+		return NextResponse.json(
+			{},
+			{ status: 400, statusText: errorMsgs.join(', ') }
+		)
 	}
 
 	const newIssue = await prisma.issue.create({
@@ -26,7 +30,7 @@ export const DELETE = async (request: NextRequest) => {
 	const body = (await request.json()) as { id: number }
 	const { id } = body
 	if (!id) {
-		return NextResponse.json({ message: 'Id is required' }, { status: 400 })
+		return NextResponse.json({}, { status: 400, statusText: 'Id is required' })
 	}
 	const issue = await prisma.issue.delete({ where: { id: Number(id) } })
 	return NextResponse.json(issue, { status: 201 })

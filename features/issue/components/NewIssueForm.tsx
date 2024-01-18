@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Form } from '@/components/ui/form'
-import { createIssueSchema } from '@/features/issue/schemas/createIssueSchema'
+import { CreateIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -17,11 +17,11 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateIssue } from '../api'
 
-type IssueFormSchema = z.infer<typeof createIssueSchema>
+type CreateIssueFormData = z.infer<typeof CreateIssueSchema>
 
 export const NewIssueForm = () => {
-	const form = useForm<IssueFormSchema>({
-		resolver: zodResolver(createIssueSchema),
+	const form = useForm<CreateIssueFormData>({
+		resolver: zodResolver(CreateIssueSchema),
 	})
 
 	const {
@@ -29,9 +29,9 @@ export const NewIssueForm = () => {
 		control,
 		formState: { errors },
 	} = form
-	const createIssueMutation = useCreateIssue()
-	const onSubmit = async (data: IssueFormSchema) => {
-		createIssueMutation.mutate(data)
+	const { mutate, isPending } = useCreateIssue()
+	const onSubmit = async (data: CreateIssueFormData) => {
+		mutate(data)
 	}
 
 	return (
@@ -40,6 +40,7 @@ export const NewIssueForm = () => {
 				<form
 					className='p-4 w-3/4 flex flex-col space-y-8 '
 					onSubmit={handleSubmit(onSubmit)}>
+					<h1 className='text-2xl text-center font-bold '>Create New Issue</h1>
 					<FormField
 						control={control}
 						name='title'
@@ -88,7 +89,7 @@ export const NewIssueForm = () => {
 					/>
 					<div className='text-center mt-4'>
 						<Button
-							disabled={createIssueMutation.isPending}
+							disabled={isPending}
 							className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
 							type='submit'
 							variant={'secondary'}>

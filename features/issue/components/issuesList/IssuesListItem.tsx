@@ -5,16 +5,17 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { IssueModel } from '@/types/IssueModel'
-import { FaRegTrashAlt } from 'react-icons/fa'
-import { useDeleteIssue } from '../api'
+import { Issue } from '@/features/issue/types/Issue'
+import { FaRegTrashAlt, FaEdit } from 'react-icons/fa'
+import { useDeleteIssue } from '../../api'
+import Link from 'next/link'
 
-export const IssuesListItem = (props: { issue: IssueModel }) => {
+export const IssuesListItem = (props: { issue: Issue }) => {
 	const { issue } = props
 
-	const deleteIssueMutation = useDeleteIssue()
+	const { mutate, isPending } = useDeleteIssue()
 	const deleteIssueHandler = () => {
-		deleteIssueMutation.mutate(issue.id)
+		mutate(issue.id)
 	}
 	return (
 		<AccordionItem value={`${issue.id}`}>
@@ -30,11 +31,16 @@ export const IssuesListItem = (props: { issue: IssueModel }) => {
 						<p>{issue.description}</p>
 					</div>
 
-					<div>
+					<div className='flex items-center'>
+						<Button className=' bg-sky-400 mx-2 hover:bg-sky-600 p-0 '>
+							<Link className='py-2 px-3' href={`/issues/edit?id=${issue.id}`}>
+								<FaEdit />
+							</Link>
+						</Button>
 						<Button
-							disabled={deleteIssueMutation.isPending}
+							disabled={isPending}
 							onClick={deleteIssueHandler}
-							className=' bg-red-600 hover:bg-red-700 py-2 px-3'>
+							className=' bg-red-600 hover:bg-red-700 mx-2 py-2 px-3'>
 							<FaRegTrashAlt className='sm:text-xltext-sm font-bold' />
 						</Button>
 					</div>

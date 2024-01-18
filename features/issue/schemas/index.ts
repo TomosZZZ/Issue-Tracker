@@ -1,2 +1,2 @@
-export * from './createIssueSchema'
-export * from './editIssueSchema'
+export * from './CreateIssueSchema'
+export * from './EditIssueSchema'
