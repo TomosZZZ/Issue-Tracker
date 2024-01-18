@@ -27,10 +27,10 @@ import { useGetIssue } from '../api/getIssue'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useEditIssue } from '../api/editIssue'
 
-type IssueFormSchema = z.infer<typeof EditIssueSchema>
+type EditIssueFormData = z.infer<typeof EditIssueSchema>
 
 export const EditIssueForm = () => {
-	const form = useForm<IssueFormSchema>({
+	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
 
@@ -49,7 +49,7 @@ export const EditIssueForm = () => {
 	const { mutate, isPending } = useEditIssue()
 	const issue = data?.issue
 
-	const onSubmit = async (data: IssueFormSchema) => {
+	const onSubmit = async (data: EditIssueFormData) => {
 		mutate({ editedIssue: data, issueId: intIssueId })
 	}
 	if (!issueId) {
@@ -72,6 +72,7 @@ export const EditIssueForm = () => {
 					<form
 						className='p-4 w-3/4 flex flex-col space-y-8 '
 						onSubmit={handleSubmit(onSubmit)}>
+						<h1 className='text-2xl text-center font-bold '>Edit issue</h1>
 						<FormField
 							control={control}
 							name='title'

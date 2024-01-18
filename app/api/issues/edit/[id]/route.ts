@@ -1,7 +1,7 @@
 import { EditIssueSchema } from '@/features/issue'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/prisma/db'
-import { Status } from '@/features/issue/types/IssueModel'
+import { Status } from '@/features/issue/types/Issue'
 import { ZodError } from 'zod'
 
 export const PATCH = async (

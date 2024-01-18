@@ -1,12 +1,14 @@
 import { Input } from '@/components/ui/input'
 import React from 'react'
-import { FaSearch } from 'react-icons/fa'
 
-export const Searchbar = (props: {
-	onGetSearch: (search: string) => void
+
+interface SearchbarProps {
 	className?: string
-}) => {
-	const { onGetSearch, className } = props
+	onSetSearch: (search: string) => void
+}
+
+export const Searchbar = (props: SearchbarProps) => {
+	const { onSetSearch, className } = props
 	return (
 		<div className={`relative  ${className}`}>
 			<svg
@@ -24,7 +26,7 @@ export const Searchbar = (props: {
 			</svg>
 			<Input
 				onChange={e => {
-					onGetSearch(e.target.value)
+					onSetSearch(e.target.value)
 				}}
 				type='text'
 				placeholder='Search'

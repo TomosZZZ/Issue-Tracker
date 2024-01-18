@@ -1,9 +1,9 @@
 import { CreateIssueSchema } from '../../schemas'
 import { z } from 'zod'
 
-type IssueFormSchema = z.infer<typeof CreateIssueSchema>
+type CreateIssueFormData = z.infer<typeof CreateIssueSchema>
 
-export const createIssue = async (data: IssueFormSchema) => {
+export const createIssue = async (data: CreateIssueFormData) => {
 	const response = await fetch(`/api/issues`, {
 		method: 'POST',
 		headers: {

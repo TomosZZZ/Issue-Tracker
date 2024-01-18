@@ -29,7 +29,7 @@ export const StatusFilter = (props: StatusFilterProps) => {
 					<SelectItem value='all'>All</SelectItem>
 					<SelectItem value='OPEN'>OPEN</SelectItem>
 					<SelectItem value='CLOSED'>CLOSED</SelectItem>
-					<SelectItem value='IN_PROGRESS'>IN_PROGRESS</SelectItem>
+					<SelectItem value='IN_PROGRESS'>IN PROGRESS</SelectItem>
 				</SelectContent>
 			</Select>
 		</div>

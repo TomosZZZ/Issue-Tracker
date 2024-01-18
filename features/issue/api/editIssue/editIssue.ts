@@ -2,10 +2,10 @@ import { EditIssueSchema } from '../../schemas'
 
 import { z } from 'zod'
 
-type EditIssueFormSchema = z.infer<typeof EditIssueSchema>
+type EditIssueFormData = z.infer<typeof EditIssueSchema>
 
 interface EditIssueProps {
-	editedIssue: EditIssueFormSchema
+	editedIssue: EditIssueFormData
 	issueId: number
 }
 

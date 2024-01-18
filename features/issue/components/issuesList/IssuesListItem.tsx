@@ -5,12 +5,12 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { IssueModel } from '@/features/issue/types/IssueModel'
+import { Issue } from '@/features/issue/types/Issue'
 import { FaRegTrashAlt, FaEdit } from 'react-icons/fa'
 import { useDeleteIssue } from '../../api'
 import Link from 'next/link'
 
-export const IssuesListItem = (props: { issue: IssueModel }) => {
+export const IssuesListItem = (props: { issue: Issue }) => {
 	const { issue } = props
 
 	const { mutate, isPending } = useDeleteIssue()

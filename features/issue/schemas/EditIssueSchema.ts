@@ -1,5 +1,5 @@
 import { z } from 'zod'
-
+import { Status } from '../types/Issue'
 export const EditIssueSchema = z.object({
 	title: z
 		.string()
@@ -8,9 +8,5 @@ export const EditIssueSchema = z.object({
 	description: z
 		.string()
 		.min(1, 'Description must contain at least 1 character'),
-	status: z.nativeEnum({
-		OPEN: 'OPEN',
-		IN_PROGRESS: 'IN_PROGRESS',
-		CLOSED: 'CLOSED',
-	}),
+	status: z.nativeEnum(Status),
 })

@@ -13,11 +13,16 @@ export const IssuesList = () => {
 	const { toast } = useToast()
 	const [search, setSearch] = useState('')
 	const [statusFilter, setStatusFilter] = useState('')
-	const getSearchHandler = (search: string) => {
+
+	const setSearchHandler = (search: string) => {
 		setSearch(search)
 	}
-	const getStatusFilterHandler = (status: string) => {
-		setStatusFilter(status)
+	const setStatusFilterHandler = (status: string) => {
+		if (status === 'all') {
+			setStatusFilter('')
+		} else {
+			setStatusFilter(status)
+		}
 	}
 	if (isError) {
 		toast({
@@ -26,7 +31,7 @@ export const IssuesList = () => {
 			variant: 'destructive',
 		})
 	}
-	console.log(statusFilter)
+
 	return (
 		<div className='sm:px-8 sm:py-6 p-2 '>
 			<h1 className='text-2xl text-gray-800 tracking-wide font-bold text-center mb-5'>
@@ -41,33 +46,22 @@ export const IssuesList = () => {
 					<div className='flex justify-between '>
 						<Searchbar
 							className='mb-5 w-[60%]'
-							onGetSearch={getSearchHandler}
+							onSetSearch={setSearchHandler}
 						/>
 						<StatusFilter
 							className='w-[30%]'
-							onGetStatusFilter={getStatusFilterHandler}
+							onGetStatusFilter={setStatusFilterHandler}
 						/>
 					</div>
 					<div className='h-[2px] rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
 					<Accordion type='single' collapsible>
 						{Array.isArray(issues) &&
 							issues.map(issue => {
-								if (statusFilter === 'all' || statusFilter === '') {
-									if (search === '') {
-										return <IssuesListItem key={issue.id} issue={issue} />
-									} else if (
-										issue.title.toLowerCase().includes(search.toLowerCase())
-									) {
-										return <IssuesListItem key={issue.id} issue={issue} />
-									}
-								} else if (statusFilter === issue.status) {
-									if (search === '') {
-										return <IssuesListItem key={issue.id} issue={issue} />
-									} else if (
-										issue.title.toLowerCase().includes(search.toLowerCase())
-									) {
-										return <IssuesListItem key={issue.id} issue={issue} />
-									}
+								if (
+									issue.title.toLowerCase().includes(search.toLowerCase()) &&
+									issue.status.includes(statusFilter)
+								) {
+									return <IssuesListItem key={issue.id} issue={issue} />
 								}
 							})}
 					</Accordion>

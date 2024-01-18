@@ -17,10 +17,10 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateIssue } from '../api'
 
-type IssueFormSchema = z.infer<typeof CreateIssueSchema>
+type CreateIssueFormData = z.infer<typeof CreateIssueSchema>
 
 export const NewIssueForm = () => {
-	const form = useForm<IssueFormSchema>({
+	const form = useForm<CreateIssueFormData>({
 		resolver: zodResolver(CreateIssueSchema),
 	})
 
@@ -30,7 +30,7 @@ export const NewIssueForm = () => {
 		formState: { errors },
 	} = form
 	const { mutate, isPending } = useCreateIssue()
-	const onSubmit = async (data: IssueFormSchema) => {
+	const onSubmit = async (data: CreateIssueFormData) => {
 		mutate(data)
 	}
 
@@ -40,6 +40,7 @@ export const NewIssueForm = () => {
 				<form
 					className='p-4 w-3/4 flex flex-col space-y-8 '
 					onSubmit={handleSubmit(onSubmit)}>
+					<h1 className='text-2xl text-center font-bold '>Create New Issue</h1>
 					<FormField
 						control={control}
 						name='title'
