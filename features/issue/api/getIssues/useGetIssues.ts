@@ -5,6 +5,7 @@ export const useGetIssues = () => {
 	const getIssuesQuery = useQuery({
 		queryKey: ['issues'],
 		queryFn: getIssues,
+		initialData: [],
 	})
 	return getIssuesQuery
 }

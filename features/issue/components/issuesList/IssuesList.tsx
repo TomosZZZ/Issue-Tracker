@@ -7,12 +7,27 @@ import { useToast } from '@/components/ui/use-toast'
 import { useGetIssues } from '../../api'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Searchbar, StatusFilter } from './issuesFilter'
+import { IssuesPagination } from './IssuesPagination'
 
 export const IssuesList = () => {
 	const { data: issues, isLoading, isError } = useGetIssues()
 	const { toast } = useToast()
 	const [search, setSearch] = useState('')
 	const [statusFilter, setStatusFilter] = useState('')
+	const [currentPage, setCurrentPage] = useState(1)
+
+	const filteredIssues = issues.filter(issue => {
+		return (
+			issue.title.toLowerCase().includes(search.toLowerCase()) &&
+			issue.status.includes(statusFilter)
+		)
+	})
+
+	const itemsPerPage = 5
+	const lastItemIndex = currentPage * itemsPerPage
+	const firstItemIndex = lastItemIndex - itemsPerPage
+
+	const currentIssues = filteredIssues.slice(firstItemIndex, lastItemIndex)
 
 	const setSearchHandler = (search: string) => {
 		setSearch(search)
@@ -54,17 +69,17 @@ export const IssuesList = () => {
 						/>
 					</div>
 					<div className='h-[2px] rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
-					<Accordion type='single' collapsible>
-						{Array.isArray(issues) &&
-							issues.map(issue => {
-								if (
-									issue.title.toLowerCase().includes(search.toLowerCase()) &&
-									issue.status.includes(statusFilter)
-								) {
-									return <IssuesListItem key={issue.id} issue={issue} />
-								}
-							})}
+					<Accordion className='mb-10' type='single' collapsible>
+						{currentIssues.map(issue => (
+							<IssuesListItem key={issue.id} issue={issue} />
+						))}
 					</Accordion>
+					<IssuesPagination
+						itemsPerPage={itemsPerPage}
+						currentPage={currentPage}
+						setCurrentPage={setCurrentPage}
+						totalItems={filteredIssues.length}
+					/>
 				</div>
 			)}
 		</div>
