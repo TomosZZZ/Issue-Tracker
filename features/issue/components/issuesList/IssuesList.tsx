@@ -10,7 +10,7 @@ import { Searchbar, StatusFilter } from './issuesFilter'
 import { PaginationBar } from '@/shared'
 
 export const IssuesList = () => {
-	const { data: issues, isLoading, isError } = useGetIssues()
+	const { data: issues, isLoading, isError, isFetching } = useGetIssues()
 	const { toast } = useToast()
 	const [search, setSearch] = useState('')
 	const [statusFilter, setStatusFilter] = useState('')
@@ -52,7 +52,7 @@ export const IssuesList = () => {
 			<h1 className='text-2xl text-gray-800 tracking-wide font-bold text-center mb-5'>
 				Issues
 			</h1>
-			{isLoading ? (
+			{isLoading || (issues.length === 0 && isFetching) ? (
 				<div className='p-5 flex  justify-center'>
 					<LoadingSpinner size={35} />
 				</div>
