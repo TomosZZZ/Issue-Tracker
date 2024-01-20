@@ -3,7 +3,7 @@ import { Issue } from '@/features/issue/types/Issue'
 export const getIssues = async () => {
 	const response = await fetch(`/api/issues`)
 	if (!response.ok) {
-		return { message: 'Something went wrong', statuse: response.status }
+		throw new Error(response.statusText)
 	}
 	const issues = (await response.json()) as Issue[]
 	return issues
