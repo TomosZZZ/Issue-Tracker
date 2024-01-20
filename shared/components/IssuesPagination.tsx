@@ -7,7 +7,6 @@ import {
 	PaginationLink,
 } from '@/components/ui/pagination'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 
 interface PaginationBar {
@@ -42,13 +41,15 @@ export const PaginationBar = ({
 		<Pagination>
 			<PaginationContent>
 				<Button
-					className='flex justify-between mx-2 bg-slate-700  hover:bg-slate-900'
+					className='flex justify-between mx-2 !bg-slate-700  !hover:bg-slate-900'
 					onClick={handlePrevPage}
+					variant={currentPage === 1 ? 'ghost' : 'default'}
 					disabled={currentPage === 1}>
 					<FaAngleLeft size={20} />
 					<span>Prev</span>
 				</Button>
 				{pages.map(page => {
+					console.log(page, currentPage)
 					if (
 						page === 1 ||
 						page === pages.length ||
@@ -59,10 +60,10 @@ export const PaginationBar = ({
 								onClick={() => {
 									setCurrentPage(page)
 								}}
-								key={page}
-								className={` ${
-									currentPage === page && 'bg-neutral-100 rounded-md'
-								}`}>
+								className={`${
+									page === currentPage && 'bg-violet-500 rounded-md text-white'
+								}`}
+								key={page}>
 								<PaginationLink href={``}>{page}</PaginationLink>
 							</PaginationItem>
 						)
@@ -70,9 +71,10 @@ export const PaginationBar = ({
 					return <PaginationEllipsis key={page} />
 				})}
 				<Button
-					className='flex justify-between bg-slate-700  hover:bg-slate-900 mx-2   '
+					className='flex justify-between !bg-slate-700  !hover:bg-slate-900 mx-2   '
 					onClick={handleNextPage}
-					disabled={currentPage === pages.length}>
+					disabled={currentPage === pages.length}
+					variant={currentPage === pages.length ? 'ghost' : 'default'}>
 					<span>Next</span>
 					<FaAngleRight size={20} />
 				</Button>

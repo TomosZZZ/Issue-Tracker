@@ -20,8 +20,8 @@ export const IssuesListItem = (props: { issue: Issue }) => {
 	return (
 		<AccordionItem value={`${issue.id}`}>
 			<AccordionTrigger>
-				<div className='flex flex-col sm:flex-row text-left justify-between w-[80%]'>
-					<h2 className='text-sm'>{issue.title}</h2>
+				<div className='flex flex-col sm:flex-row text-left justify-between w-[80%] overflow-hidden'>
+					<p className='text-sm  break-words w-[80%]'>{issue.title}</p>
 					<h3 className='text-sm'>{issue.status}</h3>
 				</div>
 			</AccordionTrigger>
@@ -31,7 +31,7 @@ export const IssuesListItem = (props: { issue: Issue }) => {
 						<p>{issue.description}</p>
 					</div>
 
-					<div className='flex items-center'>
+					<div className='flex '>
 						<Button className=' bg-sky-400 mx-2 hover:bg-sky-600 p-0 '>
 							<Link className='py-2 px-3' href={`/issues/edit?id=${issue.id}`}>
 								<FaEdit />
