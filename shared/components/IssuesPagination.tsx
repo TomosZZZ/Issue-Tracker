@@ -10,19 +10,19 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 
-interface IssuesPaginationProps {
+interface PaginationBar {
 	totalItems: number
 	itemsPerPage: number
 	currentPage: number
 	setCurrentPage: (page: number) => void
 }
 
-export const IssuesPagination = ({
+export const PaginationBar = ({
 	totalItems,
 	itemsPerPage,
 	currentPage,
 	setCurrentPage,
-}: IssuesPaginationProps) => {
+}: PaginationBar) => {
 	const pages = []
 
 	for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {

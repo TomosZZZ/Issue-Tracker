@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { useGetIssues } from '../../api'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Searchbar, StatusFilter } from './issuesFilter'
-import { IssuesPagination } from './IssuesPagination'
+import { PaginationBar } from '@/shared'
 
 export const IssuesList = () => {
 	const { data: issues, isLoading, isError } = useGetIssues()
@@ -74,7 +74,7 @@ export const IssuesList = () => {
 							<IssuesListItem key={issue.id} issue={issue} />
 						))}
 					</Accordion>
-					<IssuesPagination
+					<PaginationBar
 						itemsPerPage={itemsPerPage}
 						currentPage={currentPage}
 						setCurrentPage={setCurrentPage}
