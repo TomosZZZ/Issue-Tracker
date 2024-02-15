@@ -52,7 +52,7 @@ export const EditIssueForm = () => {
 	const onSubmit = async (data: EditIssueFormData) => {
 		mutate({ editedIssue: data, issueId: intIssueId })
 	}
-	if (!issueId) {
+	if (!issueId) {	
 		return <h1>Id param in url is missing</h1>
 	}
 	return (

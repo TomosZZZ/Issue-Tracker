@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { CardWrapper } from './cardWrapper'
 import {
 	Form,
@@ -14,21 +14,44 @@ import {
 import { useForm } from 'react-hook-form'
 
 import { Input } from '@/components/ui/input'
-import { z } from 'zod'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { RegisterSchema } from '../schemas/RegisterSchema'
 import { Button } from '@/components/ui/button'
 
-type RegisterFormData = z.infer<typeof RegisterSchema>
+import { RegisterFormData } from '../types'
+import { useRegister } from '../api/register'
+import { ErrorMessage, SuccessMessage } from './ui'
 
 export const RegisterForm = () => {
+	const [success, onSuccess] = useState('')
+	const [error, onError] = useState('')
+
 	const form = useForm<RegisterFormData>({
 		resolver: zodResolver(RegisterSchema),
 		defaultValues: { email: '', password: '', name: '' },
 	})
 
-	const onSubmit = (values: RegisterFormData) => {
-		console.log(values)
+	const { mutate, isPending } = useRegister()
+
+	const onSubmit = async (values: RegisterFormData) => {
+		onSuccess('')
+		onError('')
+		try {
+			mutate(values, {
+				onSettled: data => {
+					console.log(!!data?.error)
+					if (data?.success) {
+						onSuccess(data.success)
+					}
+					if (data?.error) {
+						onError(data.error)
+					}
+				},
+			})
+		} catch {
+			onError('Something went wrong')
+		}
 	}
 
 	return (
@@ -79,8 +102,12 @@ export const RegisterForm = () => {
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' className='w-full'>
-						Login
+					<div>
+						<SuccessMessage message={success} />
+						<ErrorMessage message={error} />
+					</div>
+					<Button disabled={isPending} type='submit' className='w-full'>
+						Register
 					</Button>
 				</form>
 			</Form>
