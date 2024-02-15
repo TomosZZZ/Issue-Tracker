@@ -21,7 +21,7 @@ export class UserService {
 			return { response: { error: errorMsgs.join(', ') }, status: 400 }
 		}
 
-		const existingUser = await userRepository.findUserByEmail(email)
+		const existingUser = await userRepository.getUserByEmail(email)
 
 		if (existingUser) {
 			return { response: { error: 'User already exists' }, status: 400 }

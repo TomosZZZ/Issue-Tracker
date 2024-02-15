@@ -1,14 +1,14 @@
 import db from '@/prisma/db'
 import bcrypt from 'bcryptjs'
 export class UserRepository {
-	async findUserByEmail(email: string) {
+	async getUserByEmail(email: string) {
 		return db.user.findUnique({
 			where: {
 				email,
 			},
 		})
 	}
-	async findUserById(id: string) {
+	async getUserById(id: string) {
 		return db.user.findUnique({
 			where: {
 				id,
