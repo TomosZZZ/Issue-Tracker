@@ -1,35 +1,12 @@
-import { RegisterSchema } from '@/features/auth/schemas/RegisterSchema'
 import { RegisterFormData } from '@/features/auth/types'
-import db from '@/prisma/db'
 import { NextRequest, NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
+import { UserService } from '@/features/user/service/UserService'
 export const POST = async (request: NextRequest) => {
-	const data = await request.json()
-	const { email, password, name } = data as RegisterFormData
-	const validation = RegisterSchema.safeParse(data)
+	const credentials = (await request.json()) as RegisterFormData
 
-	if (!validation.success) {
-		const errorMsgs = validation.error.issues.map(issue => issue.message)
-		return NextResponse.json({ error: errorMsgs.join(', ') }, { status: 400 })
-	}
+	const { createUser } = new UserService()
 
-	const existingUser = await db.user.findFirst({
-		where: {
-			email,
-		},
-	})
+	const { response, status } = await createUser(credentials)
 
-	if (existingUser) {
-		return NextResponse.json({ error: 'User already exists' }, { status: 400 })
-	}
-	const hashedPassword = await bcrypt.hash(password, 10)
-	await db.user.create({
-		data: {
-			email,
-			password: hashedPassword,
-			name,
-		},
-	})
-
-	return NextResponse.json({ success: 'User created' }, { status: 201 })
+	return NextResponse.json(response, { status })
 }
