@@ -25,4 +25,8 @@ export class UserRepository {
 			},
 		})
 	}
+
+	async validatePassword(password: string, hashedPassword: string) {
+		return bcrypt.compare(password, hashedPassword)
+	}
 }
