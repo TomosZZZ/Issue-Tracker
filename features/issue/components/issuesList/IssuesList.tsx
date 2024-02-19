@@ -1,20 +1,34 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useTransition } from 'react'
 import { Accordion } from '@/components/ui/accordion'
 import { IssuesListItem } from './IssuesListItem'
 import { useToast } from '@/components/ui/use-toast'
-import { useGetIssues } from '../../api'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Searchbar, StatusFilter } from './issuesFilter'
 import { PaginationBar } from '@/shared'
+import { getIssues } from '@/actions/getIssues'
+import { Issue } from '../../types'
 
 export const IssuesList = () => {
-	const { data: issues, isLoading, isError, isFetching } = useGetIssues()
+	const [issues, setIssues] = useState<Issue[]>([])
+	const [error, setError] = useState('')
+	const [isPending, startTransition] = useTransition()
+
 	const { toast } = useToast()
 	const [search, setSearch] = useState('')
 	const [statusFilter, setStatusFilter] = useState('')
 	const [currentPage, setCurrentPage] = useState(1)
+
+	useEffect(() => {
+		const fetchIssues = async () => {
+			startTransition(async () => {
+				const issues = (await getIssues()) as Issue[]
+				setIssues(issues)
+			})
+		}
+		fetchIssues().catch(() => setError('Something went wrong'))
+	}, [])
 
 	const filteredIssues = issues.filter(issue => {
 		return (
@@ -39,10 +53,15 @@ export const IssuesList = () => {
 			setStatusFilter(status)
 		}
 	}
-	if (isError) {
+
+	const refreshIssuesHandler = (issues: Issue[]) => {
+		setIssues(issues)
+	}
+
+	if (error) {
 		toast({
 			title: 'Error',
-			description: 'Something went wrong',
+			description: error || 'Something went wrong',
 			variant: 'destructive',
 		})
 	}
@@ -52,7 +71,7 @@ export const IssuesList = () => {
 			<h1 className='text-2xl text-gray-800 tracking-wide font-bold text-center mb-5'>
 				Issues
 			</h1>
-			{isLoading || (issues.length === 0 && isFetching) ? (
+			{isPending || issues.length === 0 ? (
 				<div className='p-5 flex  justify-center'>
 					<LoadingSpinner size={35} />
 				</div>
@@ -71,15 +90,21 @@ export const IssuesList = () => {
 					<div className='h-[2px] rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
 					<Accordion className='mb-10' type='single' collapsible>
 						{currentIssues.map(issue => (
-							<IssuesListItem key={issue.id} issue={issue} />
+							<IssuesListItem
+								onRefreshIssues={refreshIssuesHandler}
+								key={issue.id}
+								issue={issue}
+							/>
 						))}
 					</Accordion>
-					<PaginationBar
-						itemsPerPage={itemsPerPage}
-						currentPage={currentPage}
-						setCurrentPage={setCurrentPage}
-						totalItems={filteredIssues.length}
-					/>
+					{filteredIssues.length > itemsPerPage && (
+						<PaginationBar
+							itemsPerPage={itemsPerPage}
+							currentPage={currentPage}
+							setCurrentPage={setCurrentPage}
+							totalItems={filteredIssues.length}
+						/>
+					)}
 				</div>
 			)}
 		</div>

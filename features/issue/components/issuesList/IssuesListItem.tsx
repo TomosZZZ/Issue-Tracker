@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useTransition } from 'react'
 import {
 	AccordionContent,
 	AccordionItem,
@@ -7,15 +9,40 @@ import {
 import { Button } from '@/components/ui/button'
 import { Issue } from '@/features/issue/types/Issue'
 import { FaRegTrashAlt, FaEdit } from 'react-icons/fa'
-import { useDeleteIssue } from '../../api'
+
 import Link from 'next/link'
+import { deleteIssue } from '@/actions/deleteIssue'
+import { useToast } from '@/components/ui/use-toast'
+import { getIssues } from '@/actions/getIssues'
 
-export const IssuesListItem = (props: { issue: Issue }) => {
-	const { issue } = props
 
-	const { mutate, isPending } = useDeleteIssue()
+export const IssuesListItem = (props: {
+	issue: Issue
+	onRefreshIssues: (issues: Issue[]) => void
+}) => {
+	const { issue, onRefreshIssues } = props
+	const { toast } = useToast()
+	const [isPending, startTransition] = useTransition()
+
 	const deleteIssueHandler = () => {
-		mutate(issue.id)
+		startTransition(() => {
+			deleteIssue(issue.id)
+				.then(async () => {
+					const issues = (await getIssues()) as Issue[]
+					onRefreshIssues(issues)
+					toast({
+						title: 'Success!',
+						description: 'Deleting issue succeed.',
+					})
+				})
+				.catch(error => {
+					toast({
+						title: 'Error',
+						description: error.message || 'Something went wrong',
+						variant: 'destructive',
+					})
+				})
+		})
 	}
 	return (
 		<AccordionItem value={`${issue.id}`}>

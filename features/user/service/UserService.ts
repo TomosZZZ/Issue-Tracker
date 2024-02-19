@@ -71,7 +71,7 @@ export class UserService {
 			return { success: 'Logged in' }
 		} catch (error) {
 			if (error instanceof AuthError) {
-				console.log('AUTH ERROR')
+
 				switch (error.type) {
 					case 'CredentialsSignin':
 						return { error: 'Invalid credentials' }

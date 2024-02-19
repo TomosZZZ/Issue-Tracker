@@ -6,6 +6,11 @@ export type Issue = {
 	createdAt: Date
 	updatedAt: Date
 }
+export type IssueFormData = {
+	title: string
+	description: string
+	status: Status
+}
 
 export enum Status {
 	OPEN = 'OPEN',

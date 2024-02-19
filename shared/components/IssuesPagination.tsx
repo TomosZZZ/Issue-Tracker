@@ -49,7 +49,6 @@ export const PaginationBar = ({
 					<span>Prev</span>
 				</Button>
 				{pages.map(page => {
-					
 					if (
 						page === 1 ||
 						page === pages.length ||
