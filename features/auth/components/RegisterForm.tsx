@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import { CardWrapper } from './cardWrapper'
 import {
 	Form,
@@ -20,38 +20,39 @@ import { RegisterSchema } from '../schemas/RegisterSchema'
 import { Button } from '@/components/ui/button'
 
 import { RegisterFormData } from '../types'
-import { useRegister } from '../api/register'
 import { ErrorMessage, SuccessMessage } from './ui'
+import { register } from '@/actions/register'
 
 export const RegisterForm = () => {
-	const [success, onSuccess] = useState('')
-	const [error, onError] = useState('')
+	const [success, setSuccess] = useState('')
+	const [error, setError] = useState('')
+	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<RegisterFormData>({
 		resolver: zodResolver(RegisterSchema),
 		defaultValues: { email: '', password: '', name: '' },
 	})
 
-	const { mutate, isPending } = useRegister()
-
 	const onSubmit = async (values: RegisterFormData) => {
-		onSuccess('')
-		onError('')
-		try {
-			mutate(values, {
-				onSettled: data => {
-					console.log(!!data?.error)
-					if (data?.success) {
-						onSuccess(data.success)
-					}
+		setSuccess('')
+		setError('')
+		startTransition(() => {
+			register(values)
+				.then(data => {
 					if (data?.error) {
-						onError(data.error)
+						form.reset()
+						setError(data.error)
 					}
-				},
-			})
-		} catch {
-			onError('Something went wrong')
-		}
+
+					if (data?.success) {
+						form.reset()
+						setSuccess(data.success)
+					}
+				})
+				.catch(() => {
+					setError('Something went wrong')
+				})
+		})
 	}
 
 	return (

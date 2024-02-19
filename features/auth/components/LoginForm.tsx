@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useTransition } from 'react'
 import { CardWrapper } from './cardWrapper'
 import {
 	Form,
@@ -18,17 +18,41 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginSchema } from '../schemas/LoginSchema'
 import { Button } from '@/components/ui/button'
+import { ErrorMessage, SuccessMessage } from './ui'
+import { login } from '@/actions/login'
 
 type LoginFormData = z.infer<typeof LoginSchema>
 
 export const LoginForm = () => {
+	const [success, setSuccess] = useState('')
+	const [error, setError] = useState('')
+	const [isPending, startTransition] = useTransition()
+
 	const form = useForm<LoginFormData>({
 		resolver: zodResolver(LoginSchema),
 		defaultValues: { email: '', password: '' },
 	})
 
 	const onSubmit = (values: LoginFormData) => {
-		console.log(values)
+		setSuccess('')
+		setError('')
+		startTransition(() => {
+			login(values)
+				.then(data => {
+					if (data?.error) {
+						form.reset()
+						setError(data.error)
+					}
+
+					if (data?.success) {
+						form.reset()
+						setSuccess(data.success)
+					}
+				})
+				.catch(() => {
+					setError('Something went wrong')
+				})
+		})
 	}
 
 	return (
@@ -67,7 +91,11 @@ export const LoginForm = () => {
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' className='w-full'>
+					<div>
+						<SuccessMessage message={success} />
+						<ErrorMessage message={error} />
+					</div>
+					<Button disabled={isPending} type='submit' className='w-full'>
 						Login
 					</Button>
 				</form>
