@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useTransition } from 'react'
 import { Form } from '@/components/ui/form'
 import { CreateIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
@@ -15,23 +15,46 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { useCreateIssue } from '../api'
+import { createIssue } from '@/features/issue/actions'
+import { Status } from '../types'
+import { useToast } from '@/components/ui/use-toast'
+import { useRouter } from 'next/navigation'
 
 type CreateIssueFormData = z.infer<typeof CreateIssueSchema>
 
 export const NewIssueForm = () => {
+	const [isPending, startTransition] = useTransition()
+
 	const form = useForm<CreateIssueFormData>({
 		resolver: zodResolver(CreateIssueSchema),
 	})
 
+	const { toast } = useToast()
+	const router = useRouter()
 	const {
 		handleSubmit,
 		control,
 		formState: { errors },
 	} = form
-	const { mutate, isPending } = useCreateIssue()
 	const onSubmit = async (data: CreateIssueFormData) => {
-		mutate(data)
+		startTransition(() => {
+			createIssue({ ...data, status: 'OPEN' as Status }).then(data => {
+				if (data?.success) {
+					toast({
+						title: 'Success!',
+						description: 'Creating issue succeed.',
+					})
+					router.replace('/issues')
+				}
+				if (data?.error) {
+					toast({
+						title: 'Error',
+						description: data.error,
+						variant: 'destructive',
+					})
+				}
+			})
+		})
 	}
 
 	return (

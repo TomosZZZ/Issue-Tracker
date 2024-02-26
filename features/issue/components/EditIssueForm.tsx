@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { EditIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,22 +22,32 @@ import {
 	SelectValue,
 	SelectContent,
 } from '@/components/ui/select'
-import { useSearchParams } from 'next/navigation'
-import { useGetIssue } from '../api/getIssue'
+import { useRouter, useSearchParams } from 'next/navigation'
+
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
-import { useEditIssue } from '../api/editIssue'
+
+import { Issue } from '../types'
+import { getIssue, editIssue } from '@/features/issue/actions'
+import { useToast } from '@/components/ui/use-toast'
 
 type EditIssueFormData = z.infer<typeof EditIssueSchema>
 
 export const EditIssueForm = () => {
+	const searchParams = useSearchParams()
+	const issueId = searchParams.get('id') as string
+	const intIssueId = parseInt(issueId)
+
+	const [error, setError] = useState('')
+	const [issue, setIssue] = useState<Issue>()
+
+	const [isPending, startTransition] = useTransition()
+	
 	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
 
-	const searchParams = useSearchParams()
-	const issueId = searchParams.get('id') as string
-
-	const intIssueId = parseInt(issueId)
+	const { toast } = useToast()
+	const router = useRouter()
 
 	const {
 		handleSubmit,
@@ -45,29 +55,63 @@ export const EditIssueForm = () => {
 		formState: { errors },
 	} = form
 
-	const { data, isLoading, isError, error } = useGetIssue(intIssueId)
-	const { mutate, isPending } = useEditIssue()
-	const issue = data?.issue
+	useEffect(() => {
+		if (!issueId) {
+			setError('Id param in url is missing')
+		}
+
+		const fetchIssue = async () => {
+			startTransition(async () => {
+				setError('')
+				try {
+					const issue = (await getIssue(intIssueId)) as Issue
+					setIssue(issue)
+				} catch (error) {
+					setError((error as string) || 'Something went wrong')
+				}
+			})
+		}
+		fetchIssue().catch(error =>
+			setError(error.toString() || 'Something went wrong')
+		)
+	}, [issueId, intIssueId])
 
 	const onSubmit = async (data: EditIssueFormData) => {
-		mutate({ editedIssue: data, issueId: intIssueId })
+		startTransition(async () => {
+			setError('')
+			editIssue(intIssueId, data)
+				.then(res => {
+					if (res) {
+						toast({
+							title: 'Success',
+							description: 'Issue updated',
+						})
+						router.replace('/issues')
+					}
+				})
+				.catch(error => {
+					toast({
+						title: 'Error',
+						description: error.toString(),
+						variant: 'destructive',
+					})
+				})
+		})
 	}
-	if (!issueId) {
-		return <h1>Id param in url is missing</h1>
-	}
+
 	return (
 		<Card className='w-[80%]  flex justify-center shadow-xl shadow-violet-200 lg:w-[60%]'>
-			{isLoading && (
+			{isPending && !issue && (
 				<div className='p-5'>
 					<LoadingSpinner size={35} />
 				</div>
 			)}
-			{isError && (
+			{error && (
 				<div className='p-5'>
 					<p className=' text-xl'>{error.toString()}</p>
 				</div>
 			)}
-			{!isLoading && !isError && issue && (
+			{!isPending && !error && issue && (
 				<Form {...form}>
 					<form
 						className='p-4 w-3/4 flex flex-col space-y-8 '
@@ -146,8 +190,8 @@ export const EditIssueForm = () => {
 											</SelectContent>
 										</Select>
 									</FormControl>
-									{errors.title && (
-										<p className=' text-red-600 text-sm font-light'>{`${errors.title.message}`}</p>
+									{errors.status && (
+										<p className=' text-red-600 text-sm font-light'>{`${errors.status.message}`}</p>
 									)}
 								</FormItem>
 							)}
