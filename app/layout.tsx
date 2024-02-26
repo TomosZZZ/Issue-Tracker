@@ -2,8 +2,6 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Navbar from './Navbar'
 import { Toaster } from '@/components/ui/toaster'
-import { Providers } from '@/utils/Providers'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,12 +18,9 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={inter.className}>
-				<Providers>
-					<Navbar />
-					<main>{children}</main>
-					<Toaster />
-					<ReactQueryDevtools />
-				</Providers>
+				<Navbar />
+				<main>{children}</main>
+				<Toaster />
 			</body>
 		</html>
 	)

@@ -27,27 +27,27 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 import { Issue } from '../types'
-import { getIssue } from '@/actions/getIssue'
-import { editIssue } from '@/actions/editIssue'
+import { getIssue, editIssue } from '@/features/issue/actions'
 import { useToast } from '@/components/ui/use-toast'
 
 type EditIssueFormData = z.infer<typeof EditIssueSchema>
 
 export const EditIssueForm = () => {
+	const searchParams = useSearchParams()
+	const issueId = searchParams.get('id') as string
+	const intIssueId = parseInt(issueId)
+
+	const [error, setError] = useState('')
+	const [issue, setIssue] = useState<Issue>()
+
+	const [isPending, startTransition] = useTransition()
+	
 	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
-	const [error, setError] = useState('')
-	const [issue, setIssue] = useState<Issue>()
-	const [isPending, startTransition] = useTransition()
 
 	const { toast } = useToast()
 	const router = useRouter()
-
-	const searchParams = useSearchParams()
-	const issueId = searchParams.get('id') as string
-
-	const intIssueId = parseInt(issueId)
 
 	const {
 		handleSubmit,

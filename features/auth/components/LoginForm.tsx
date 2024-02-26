@@ -19,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginSchema } from '../schemas/LoginSchema'
 import { Button } from '@/components/ui/button'
 import { ErrorMessage, SuccessMessage } from './ui'
-import { login } from '@/actions/login'
+import { login } from '@/features/auth/actions'
 
 type LoginFormData = z.infer<typeof LoginSchema>
 
@@ -39,18 +39,13 @@ export const LoginForm = () => {
 		startTransition(() => {
 			login(values)
 				.then(data => {
-					if (data?.error) {
-						form.reset()
-						setError(data.error)
-					}
-
 					if (data?.success) {
 						form.reset()
 						setSuccess(data.success)
 					}
 				})
-				.catch(() => {
-					setError('Something went wrong')
+				.catch(erorr => {
+					setError(error || 'Something went wrong')
 				})
 		})
 	}

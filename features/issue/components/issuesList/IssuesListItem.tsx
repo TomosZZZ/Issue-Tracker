@@ -11,10 +11,8 @@ import { Issue } from '@/features/issue/types/Issue'
 import { FaRegTrashAlt, FaEdit } from 'react-icons/fa'
 
 import Link from 'next/link'
-import { deleteIssue } from '@/actions/deleteIssue'
 import { useToast } from '@/components/ui/use-toast'
-import { getIssues } from '@/actions/getIssues'
-
+import { getIssues, deleteIssue } from '@/features/issue/actions'
 
 export const IssuesListItem = (props: {
 	issue: Issue

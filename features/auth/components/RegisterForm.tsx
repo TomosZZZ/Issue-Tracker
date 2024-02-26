@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button'
 
 import { RegisterFormData } from '../types'
 import { ErrorMessage, SuccessMessage } from './ui'
-import { register } from '@/actions/register'
+import { register } from '@/features/auth/actions'
 
 export const RegisterForm = () => {
 	const [success, setSuccess] = useState('')
@@ -39,18 +39,13 @@ export const RegisterForm = () => {
 		startTransition(() => {
 			register(values)
 				.then(data => {
-					if (data?.error) {
-						form.reset()
-						setError(data.error)
-					}
-
 					if (data?.success) {
 						form.reset()
 						setSuccess(data.success)
 					}
 				})
-				.catch(() => {
-					setError('Something went wrong')
+				.catch(error => {
+					setError(error || 'Something went wrong')
 				})
 		})
 	}

@@ -25,6 +25,7 @@ export class IssueService {
 		return await deleteIssue(issueId)
 	}
 	async editIssue(issueId: number, issue: IssueFormData) {
-		return await updateIssue({ id: issueId, ...issue })
+		return await updateIssue({ id: issueId, formData: issue })
 	}
 }
+export const issueService = new IssueService()

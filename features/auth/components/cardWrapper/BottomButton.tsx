@@ -8,7 +8,7 @@ interface BackButtonProps {
 	href: string
 	label: string
 }
-export const BackButton = ({ href, label }: BackButtonProps) => {
+export const BottomButton = ({ href, label }: BackButtonProps) => {
 	return (
 		<Button className='font-normal w-full' variant={'link'} size={'sm'} asChild>
 			<Link href={href}>{label}</Link>

@@ -1,12 +1,9 @@
 'use server'
 
-import { IssueService } from '@/features/issue/service/IssueService'
 import { IssueFormData } from '@/features/issue/types'
-
+import { issueService } from '@/features/issue/service'
 export const createIssue = async (issue: IssueFormData) => {
-	const issueService = new IssueService()
-	const { createIssue } = issueService
-	const { error, success } = await createIssue(issue)
+	const { error, success } = await issueService.createIssue(issue)
 	if (error) {
 		return { error }
 	}

@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Searchbar, StatusFilter } from './issuesFilter'
 import { PaginationBar } from '@/shared'
-import { getIssues } from '@/actions/getIssues'
+import { getIssues } from '@/features/issue/actions'
 import { Issue } from '../../types'
 
 export const IssuesList = () => {
@@ -23,8 +23,12 @@ export const IssuesList = () => {
 	useEffect(() => {
 		const fetchIssues = async () => {
 			startTransition(async () => {
-				const issues = (await getIssues()) as Issue[]
-				setIssues(issues)
+				try {
+					const issues = (await getIssues()) as Issue[]
+					setIssues(issues)
+				} catch (error) {
+					setError('Something went wrong')
+				}
 			})
 		}
 		fetchIssues().catch(() => setError('Something went wrong'))
@@ -71,11 +75,17 @@ export const IssuesList = () => {
 			<h1 className='text-2xl text-gray-800 tracking-wide font-bold text-center mb-5'>
 				Issues
 			</h1>
-			{isPending || issues.length === 0 ? (
+			{isPending && issues.length === 0 && (
 				<div className='p-5 flex  justify-center'>
 					<LoadingSpinner size={35} />
 				</div>
-			) : (
+			)}
+			{!isPending && issues.length === 0 && (
+				<div className='p-5 flex justify-center'>
+					<p>No issues found</p>
+				</div>
+			)}
+			{issues.length > 0 && !isPending && (
 				<div>
 					<div className='flex justify-between '>
 						<Searchbar

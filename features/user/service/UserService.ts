@@ -1,11 +1,15 @@
 import { LoginSchema } from '@/features/auth/schemas'
-import { UserRepository } from './../repository/UserRepository'
 import { RegisterSchema } from '@/features/auth/schemas/RegisterSchema'
 import { signIn } from '@/features/auth/config/auth'
 import { DEFAULT_LOGIN_REDIRECT } from '@/features/auth/config/routes'
 import { AuthError } from 'next-auth'
-
+import bcrypt from 'bcryptjs'
+import { userRepository } from './../repository'
 export class UserService {
+	private async validatePassword(password: string, hashedPassword: string) {
+		return bcrypt.compare(password, hashedPassword)
+	}
+
 	async createUser({
 		email,
 		password,
@@ -15,8 +19,6 @@ export class UserService {
 		password: string
 		name: string
 	}) {
-		const userRepository = new UserRepository()
-
 		const validation = RegisterSchema.safeParse({ email, password, name })
 
 		if (!validation.success) {
@@ -28,7 +30,7 @@ export class UserService {
 		const existingUser = await userRepository.getUserByEmail(email)
 
 		if (existingUser) {
-			return  { error: 'User already exists' }
+			return { error: 'User already exists' }
 		}
 
 		await userRepository.createUser(email, password, name)
@@ -45,18 +47,13 @@ export class UserService {
 			return { error: errorMsgs.join(', ') }
 		}
 
-		const userRepository = new UserRepository()
-
 		const user = await userRepository.getUserByEmail(email)
 
 		if (!user || !user.email || !user.password) {
 			return { error: 'User not found' }
 		}
 
-		const passwordIsValid = await userRepository.validatePassword(
-			password,
-			user.password
-		)
+		const passwordIsValid = await this.validatePassword(password, user.password)
 
 		if (!passwordIsValid) {
 			return { error: 'Password is invalid' }
@@ -71,7 +68,6 @@ export class UserService {
 			return { success: 'Logged in' }
 		} catch (error) {
 			if (error instanceof AuthError) {
-
 				switch (error.type) {
 					case 'CredentialsSignin':
 						return { error: 'Invalid credentials' }
@@ -83,3 +79,5 @@ export class UserService {
 		}
 	}
 }
+
+export const userService = new UserService()

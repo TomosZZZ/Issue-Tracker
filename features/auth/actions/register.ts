@@ -1,13 +1,11 @@
 'use server'
 
 import { RegisterFormData } from '@/features/auth/types'
-import { UserService } from '@/features/user/service/UserService'
+import { userService } from '@/features/user/service'
 export const register = async (values: RegisterFormData) => {
-	const { createUser } = new UserService()
-
-	const { error, success } = await createUser(values)
+	const { error, success } = await userService.createUser(values)
 	if (error) {
-		return { error }
+		throw error 
 	}
 	if (success) {
 		return { success }

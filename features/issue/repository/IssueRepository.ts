@@ -32,10 +32,11 @@ export class IssueRepository {
 	}
 	async updateIssue({
 		id,
-		title,
-		description,
-		status,
-	}: IssueFormData & { id: number }) {
+		formData: { title, description, status },
+	}: {
+		id: number
+		formData: IssueFormData
+	}) {
 		return await db.issue.update({
 			where: {
 				id: id,
@@ -48,3 +49,5 @@ export class IssueRepository {
 		})
 	}
 }
+
+export const issueRepository = new IssueRepository()

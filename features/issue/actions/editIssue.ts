@@ -1,14 +1,11 @@
 'use server'
 
-import { IssueService } from '@/features/issue/service/IssueService'
 import { IssueFormData } from '@/features/issue/types'
-
+import { issueService } from '@/features/issue/service'
 export const editIssue = async (issueId: number, issue: IssueFormData) => {
-	const { editIssue } = new IssueService()
-
 	if (isNaN(issueId)) {
 		throw new Error(`Id: '${issueId}' is not a number`)
 	}
 
-	return await editIssue(issueId, issue)
+	return await issueService.editIssue(issueId, issue)
 }
