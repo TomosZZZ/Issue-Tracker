@@ -8,16 +8,16 @@ import { Social } from './SocialMediaButtons'
 interface CardWrapperProps {
 	children: React.ReactNode
 	headerLabel: string
-	backButtonLabel: string
-	backButtonHref: string
+	bottomButtonLabel: string
+	bottomButtonHref: string
 	showSocial?: boolean
 }
 
 export const CardWrapper = ({
 	children,
 	headerLabel,
-	backButtonHref,
-	backButtonLabel,
+	bottomButtonHref,
+	bottomButtonLabel,
 	showSocial,
 }: CardWrapperProps) => {
 	return (
@@ -32,7 +32,7 @@ export const CardWrapper = ({
 				</CardFooter>
 			)}
 			<CardFooter>
-				<BottomButton href={backButtonHref} label={backButtonLabel} />
+				<BottomButton href={bottomButtonHref} label={bottomButtonLabel} />
 			</CardFooter>
 		</Card>
 	)
