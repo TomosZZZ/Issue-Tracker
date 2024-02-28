@@ -41,7 +41,7 @@ export const EditIssueForm = () => {
 	const [issue, setIssue] = useState<Issue>()
 
 	const [isPending, startTransition] = useTransition()
-	
+
 	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
