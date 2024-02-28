@@ -19,27 +19,25 @@ const Navbar = () => {
 	}
 
 	return (
-		<nav className='flex h-14 border-b sm:space-x-8 space-x-4 px-2 sm:px-8 mb-5 items-center'>
-			<div>
-				<Link className='text-2xl ' href='/'>
-					<FaBug className='text-violet-600' />
-				</Link>
-				<ul className='flex space-x-6'>
-					{links.map(link => (
-						<Link
-							className={classNames({
-								'text-zinc-900': currentPath === link.path,
-								'text-zinc-500': currentPath !== link.path,
-								'hover:text-zinc-800 transition-colors font-medium text-xl':
-									true,
-							})}
-							key={link.path}
-							href={link.path}>
-							<li className='sm:text-2xl text-lg'>{link.label}</li>
-						</Link>
-					))}
-				</ul>
-			</div>
+		<nav className='flex h-[8vh] border-b sm:space-x-8 space-x-4 px-2 sm:px-8 mb-5 items-center'>
+			<Link className='text-2xl ' href='/'>
+				<FaBug className='text-violet-600' />
+			</Link>
+			<ul className='flex space-x-6'>
+				{links.map(link => (
+					<Link
+						className={classNames({
+							'text-zinc-900': currentPath === link.path,
+							'text-zinc-500': currentPath !== link.path,
+							'hover:text-zinc-800 transition-colors font-medium text-xl': true,
+						})}
+						key={link.path}
+						href={link.path}>
+						<li className='sm:text-2xl text-lg'>{link.label}</li>
+					</Link>
+				))}
+			</ul>
+
 			<div>
 				<Button onClick={logoutHandler}>Logout</Button>
 			</div>
