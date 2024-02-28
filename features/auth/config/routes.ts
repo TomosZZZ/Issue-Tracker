@@ -1,7 +1,7 @@
-export const publicRoutes = ['/', '/auth/new-verification']
+export const PUBLIC_ROUTES = ['/']
 
-export const authRoutes = ['/auth/login', '/auth/register']
+export const AUTH_ROUTES = ['/auth/login', '/auth/register']
 
-export const apiAuthPrefix = '/api/auth'
+export const API_AUTH_PREFIX = '/api/auth'
 
 export const DEFAULT_LOGIN_REDIRECT = '/issues'
