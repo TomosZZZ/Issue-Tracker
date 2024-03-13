@@ -6,17 +6,18 @@ import { usePathname } from 'next/navigation'
 import classNames from 'classnames'
 import { Button } from '@/components/ui/button'
 import { signOut } from 'next-auth/react'
-
+import { useSession } from 'next-auth/react'
 const Navbar = () => {
 	const currentPath = usePathname()
 	const links = [
-		{ label: 'Dashboard', path: '/' },
+		{ label: 'Profile', path: '/profile' },
 		{ label: 'Issues', path: '/issues' },
 	]
 
 	const logoutHandler = async () => {
 		signOut()
 	}
+	const { data: session } = useSession()
 
 	return (
 		<nav className='flex h-[8vh] border-b sm:space-x-8 space-x-4 px-2 sm:px-8 mb-5 items-center'>
@@ -39,7 +40,8 @@ const Navbar = () => {
 			</ul>
 
 			<div>
-				<Button onClick={logoutHandler}>Logout</Button>
+				{!session && <Link href='/auth/login'>Login</Link>}
+				{session && <Button onClick={logoutHandler}>Logout</Button>}
 			</div>
 		</nav>
 	)

@@ -1,1 +1,2 @@
-export * from './IssuesPagination'
+export * from './PagintationBar'
+export * from './Searchbar'
