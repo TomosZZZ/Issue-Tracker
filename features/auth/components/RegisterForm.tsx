@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useTransition } from 'react'
-import { CardWrapper } from './cardWrapper'
+import { CardWrapper } from './ui/cardWrapper'
 import {
 	Form,
 	FormControl,
@@ -45,7 +45,7 @@ export const RegisterForm = () => {
 					}
 				})
 				.catch(error => {
-					setError(error || 'Something went wrong')
+					setError(error.message || 'Something went wrong')
 				})
 		})
 	}
@@ -53,8 +53,8 @@ export const RegisterForm = () => {
 	return (
 		<CardWrapper
 			headerLabel='Sign up'
-			backButtonLabel='Already have an account?'
-			backButtonHref='/auth/login'
+			bottomButtonLabel='Already have an account?'
+			bottomButtonHref='/auth/login'
 			showSocial>
 			<Form {...form}>
 				<form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>

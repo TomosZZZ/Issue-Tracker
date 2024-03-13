@@ -41,9 +41,9 @@ export const PaginationBar = ({
 		<Pagination>
 			<PaginationContent>
 				<Button
-					className='flex justify-between mx-2 !bg-slate-700  !hover:bg-slate-900'
+					className='flex justify-between mx-2 '
 					onClick={handlePrevPage}
-					variant={currentPage === 1 ? 'ghost' : 'default'}
+					variant={currentPage === 1 ? 'ghost' : 'secondary'}
 					disabled={currentPage === 1}>
 					<FaAngleLeft size={20} />
 					<span>Prev</span>
@@ -70,10 +70,10 @@ export const PaginationBar = ({
 					return <PaginationEllipsis key={page} />
 				})}
 				<Button
-					className='flex justify-between !bg-slate-700  !hover:bg-slate-900 mx-2   '
+					className='flex justify-between mx-2   '
 					onClick={handleNextPage}
 					disabled={currentPage === pages.length}
-					variant={currentPage === pages.length ? 'ghost' : 'default'}>
+					variant={currentPage === pages.length ? 'ghost' : 'secondary'}>
 					<span>Next</span>
 					<FaAngleRight size={20} />
 				</Button>

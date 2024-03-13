@@ -75,6 +75,7 @@ export const IssuesList = () => {
 			<h1 className='text-2xl text-gray-800 tracking-wide font-bold text-center mb-5'>
 				Issues
 			</h1>
+			{error && <p>{error}</p>}
 			{isPending && issues.length === 0 && (
 				<div className='p-5 flex  justify-center'>
 					<LoadingSpinner size={35} />
