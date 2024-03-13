@@ -1,25 +1,94 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")// uses a direct connection
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
 model Issue {
   id          Int      @id @default(autoincrement())
   title       String   @db.VarChar(255)
-  description String   @db.Text
+  description String
   status      Status   @default(OPEN)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+
+
+// model User {
+//   id                  String       @id @default(cuid())
+//   name                String?
+//   email               String?      @unique
+//   image               String?
+//   password            String?
+//   emailVerified       DateTime?
+//   accounts            Account[]
+//   friends             User[]       @relation("Friends")
+//   friendOf            User[]       @relation("Friends")
+//   sentInvitations     Invitation[] @relation("SentInvitations")
+//   receivedInvitations Invitation[] @relation("ReceivedInvitations")
+// }
+model User {
+  id                  String       @id @default(cuid())
+  name                String?
+  email               String?      @unique
+  image               String?
+  password            String?
+  emailVerified       DateTime?
+  accounts            Account[]
+  friends             UserFriends[] @relation("User")
+  friendOf            UserFriends[] @relation("Friend")      
+  sentInvitations     Invitation[] @relation("SentInvitations")
+  recievedInvitations Invitation[] @relation("RecievedInvitations")
+}
+
+model UserFriends {
+  userId String
+  User   User   @relation("User",fields: [userId], references: [id])
+  friendId String
+  friend User  @relation("Friend",fields: [friendId], references: [id])
+  @@id([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+}
+model Invitation {
+  id         String           @id @default(cuid())
+  senderId   String
+  recieverId String
+  status     InvitationStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  sender     User             @relation("SentInvitations", fields: [senderId], references: [id])
+  reciever   User             @relation("RecievedInvitations", fields: [recieverId], references: [id])
+
+  @@index([recieverId])
+  @@index([senderId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
 
 enum Status {
   OPEN
@@ -27,32 +96,7 @@ enum Status {
   CLOSED
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-}
-
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
 }
