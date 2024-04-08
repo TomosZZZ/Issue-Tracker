@@ -16,14 +16,12 @@ interface RequestListItemProps {
 	request: Invitation
 	currentUser: User
 	onRefreshRequests: (id: string) => void
-
 }
 
 export const RequestListItem = ({
 	request: { senderId, id },
 	currentUser,
 	onRefreshRequests,
-
 }: RequestListItemProps) => {
 	const { toast } = useToast()
 	const [rejectIsPending, startRejectTransition] = useTransition()
@@ -92,7 +90,6 @@ export const RequestListItem = ({
 						duration: 3000,
 					})
 				})
-
 		})
 		onRefreshRequests(id)
 	}
@@ -107,13 +104,13 @@ export const RequestListItem = ({
 			{sender && (
 				<>
 					<div className='flex items-center space-x-5'>
-						<Avatar>
+						<Avatar className='w-[30px] h-[30px] sm:w-[40px] sm:h-[40px]'>
 							{sender.image && <AvatarImage src={sender.image} />}
 							<AvatarFallback>
 								<FaUser />
 							</AvatarFallback>
 						</Avatar>
-						<p className='text-lg'>{sender.name}</p>
+						<p className=' text-md sm:text-lg'>{sender.name}</p>
 					</div>
 					<div className='space-x-2'>
 						<Button

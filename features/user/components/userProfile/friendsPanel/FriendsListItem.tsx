@@ -3,24 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import {
-	createInvitation,
-	deleteFriend,
-	deleteInvitation,
-} from '@/features/user/actions'
-import { addFriend } from '@/features/user/actions/friends/addFriend'
+import { createInvitation, deleteFriend } from '@/features/user/actions'
 import { User } from '@/features/user/types/User'
 import { Invitation } from '@prisma/client'
-import { on } from 'events'
 
 import React, { useState, useTransition } from 'react'
-import {
-	FaTrash,
-	FaUser,
-	FaUserClock,
-	FaUserCheck,
-	FaCheck,
-} from 'react-icons/fa'
+import { FaTrash, FaUser, FaUserClock, FaCheck, FaPlus } from 'react-icons/fa'
 
 interface FriendsListItemProps {
 	user: User
@@ -28,6 +16,7 @@ interface FriendsListItemProps {
 	currentUserId: string
 	invitations?: Invitation[]
 	onRefreshUsers?: () => void
+	filter?: string
 }
 
 export const FriendsListItem = ({
@@ -36,6 +25,7 @@ export const FriendsListItem = ({
 	currentUserId,
 	invitations,
 	onRefreshUsers,
+	filter,
 }: FriendsListItemProps) => {
 	const { toast } = useToast()
 	const [isPending, startTransition] = useTransition()
@@ -53,40 +43,10 @@ export const FriendsListItem = ({
 		invitation =>
 			invitation.senderId === id && invitation.recieverId === currentUserId
 	)
+	if (invitationToAccept) return null
+	if (filter === 'pending' && !pendingInvitation) return null
+	if (filter === 'add' && pendingInvitation) return null
 
-	const acceptInvitationHandler = () => {
-		startTransition(() => {
-			if (!invitationToAccept) return
-			deleteInvitation(invitationToAccept.id)
-				.then()
-				.catch(() => {
-					toast({
-						title: 'Error',
-						description: 'Something went wrong',
-						duration: 3000,
-					})
-					return
-				})
-			addFriend(currentUserId, id)
-				.then(data => {
-					if (data.success) {
-						toast({
-							title: 'Success!!',
-							description: data.success || 'Friend added',
-							duration: 3000,
-						})
-					}
-				})
-				.catch(err => {
-					toast({
-						title: 'Error',
-						description: err.message || 'Something went wrong',
-						duration: 3000,
-					})
-				})
-		})
-		onRefreshUsers && onRefreshUsers()
-	}
 	const addFriendHandler = () => {
 		createInvitation({ senderId: currentUserId, recieverId: id })
 			.then(async data => {
@@ -144,22 +104,22 @@ export const FriendsListItem = ({
 		button = (
 			<div className='flex items-center space-x-4'>
 				{pendingInvitation && (
-					<p className='text-sm font-light italic'>Invitation sent</p>
+					<p className='sm:text-sm text-xs font-light italic'>
+						Invitation sent
+					</p>
 				)}
-				{invitationToAccept && (
-					<p className='text-sm font-light italic'>Accept</p>
-				)}
+
+				{!pendingInvitation && <p className='text-sm font-light italic'>Add</p>}
 				<Button
 					size={'sm'}
 					className={`${
-						pendingInvitation ? 'bg-sky-700' : 'bg-sky-400 hover:bg-sky-500'
-					} ${invitationToAccept && 'hover:bg-emerald-900 bg-emerald-500'} `}
-					onClick={
-						invitationToAccept ? acceptInvitationHandler : addFriendHandler
-					}
+						pendingInvitation
+							? 'bg-sky-500'
+							: 'hover:bg-emerald-900 bg-emerald-500'
+					} `}
+					onClick={addFriendHandler}
 					disabled={pendingInvitation || isPending}>
-					{!pendingInvitation && !invitationToAccept && <FaUserCheck />}
-					{invitationToAccept && <FaCheck />}
+					{!pendingInvitation && <FaPlus />}
 					{pendingInvitation && <FaUserClock />}
 				</Button>
 			</div>
@@ -169,13 +129,13 @@ export const FriendsListItem = ({
 	return (
 		<li className='flex justify-between py-3'>
 			<div className='flex items-center space-x-5'>
-				<Avatar>
-					{image && <AvatarImage src={image} />}
+				<Avatar className='w-[30px] h-[30px] sm:w-[40px] sm:h-[40px]'>
+					{image && name && <AvatarImage src={image} alt={name} />}
 					<AvatarFallback>
 						<FaUser />
 					</AvatarFallback>
 				</Avatar>
-				<p className='text-lg'>{name}</p>
+				<p className='text-md sm:text-lg'>{name}</p>
 			</div>
 			{button}
 		</li>

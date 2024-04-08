@@ -4,10 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AccountPanel } from './AccountPanel'
 import { FriendsPanel } from './friendsPanel/FriendsPanel'
 import { FaUser, FaUsers, FaUserEdit, FaStarOfLife } from 'react-icons/fa'
+import { EditProfilePanel } from './EditProfilePanel'
+import { ChangePasswordPanel } from './ChangePasswordPanel'
 export const UserProfile = () => {
 	return (
-		<Tabs defaultValue='account' className='w-1/2'>
-			<TabsList className='grid w-full grid-cols-4  bg-gray-800 '>
+		<Tabs defaultValue='account' className='w-[90%] sm:w-3/4 lg:w-3/5 xl:w-1/2'>
+			<TabsList className='grid w-full grid-cols-2 grid-rows-2 sm:grid-rows-1 sm:grid-cols-4 h-auto bg-gray-800 '>
 				<TabsTrigger
 					className='data-[state=active]:bg-violet-500 space-x-2 data-[state=active]:text-white text-white '
 					value='account'>
@@ -43,8 +45,12 @@ export const UserProfile = () => {
 			<TabsContent value='friends'>
 				<FriendsPanel />
 			</TabsContent>
-			<TabsContent value='edit'>Edit</TabsContent>
-			<TabsContent value='password'>Password</TabsContent>
+			<TabsContent value='edit'>
+				<EditProfilePanel />
+			</TabsContent>
+			<TabsContent value='password'>
+				<ChangePasswordPanel />
+			</TabsContent>
 		</Tabs>
 	)
 }

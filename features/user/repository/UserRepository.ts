@@ -1,5 +1,7 @@
 import db from '@/prisma/db'
 import bcrypt from 'bcryptjs'
+import { EditPasswordSchema } from '../schemas'
+import { z } from 'zod'
 export class UserRepository {
 	async getUserByEmail(email: string) {
 		return db.user.findUnique({
@@ -38,6 +40,33 @@ export class UserRepository {
 		})
 	}
 
+	async getUsers() {
+		const users = await db.user.findMany({
+			include: {
+				friends: true,
+				friendOf: true,
+				sentInvitations: true,
+				recievedInvitations: true,
+			},
+		})
+
+		return users
+	}
+	async editUser(data: { name: string; image: string }, id: string) {
+		const response = await db.user.update({
+			data: {
+				image: data.image,
+				name: data.name,
+			},
+			where: {
+				id,
+			},
+		})
+		if (!response) {
+			return { error: 'Something went wrong. Could not update profile' }
+		}
+		return { success: 'Profile updated successfuly!' }
+	}
 	async addFriend(userId: string, friendId: string) {
 		const response = await db.userFriends.create({
 			data: {
@@ -58,18 +87,6 @@ export class UserRepository {
 		return { success: 'Friend added' }
 	}
 
-	async getUsers() {
-		const users = await db.user.findMany({
-			include: {
-				friends: true,
-				friendOf: true,
-				sentInvitations: true,
-				recievedInvitations: true,
-			},
-		})
-
-		return users
-	}
 	async deleteFriend(userId: string, friendId: string) {
 		const res1 = await db.userFriends.delete({
 			where: {
@@ -92,6 +109,40 @@ export class UserRepository {
 			return { error: 'Friend not deleted. Something went wrong' }
 		}
 		return { success: 'Friend deleted' }
+	}
+	async changePassword({
+		password,
+		newPassword,
+		passwordConfirmation,
+		id,
+	}: z.infer<typeof EditPasswordSchema> & { id: string }) {
+		const user = await this.getUserById(id)
+		if (!user) {
+			return { error: 'User not found' }
+		}
+		if (!user.password) {
+			return { error: 'Password is required' }
+		}
+		const passwordIsValid = await bcrypt.compare(password, user.password)
+		if (!passwordIsValid) {
+			return { error: 'Password is invalid' }
+		}
+		if (newPassword !== passwordConfirmation) {
+			return { error: 'New passwords are not the same' }
+		}
+		const hashedPassword = await bcrypt.hash(newPassword, 10)
+		const response = await db.user.update({
+			data: {
+				password: hashedPassword,
+			},
+			where: {
+				id,
+			},
+		})
+		if (!response) {
+			return { error: 'Something went wrong. Could not update password' }
+		}
+		return { success: 'Password updated successfuly!' }
 	}
 }
 

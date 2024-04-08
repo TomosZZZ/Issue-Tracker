@@ -6,10 +6,9 @@ import { User } from '@/features/user/types/User'
 import { getUsers } from '@/features/user/actions'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Invitation } from '@/features/user/types/Invitation'
-import { set } from 'zod'
-import { get } from 'http'
 import { getInvitations } from '@/features/user/actions/invitations/getInvitations'
 import { PaginationBar, Searchbar } from '@/shared'
+import { AddFriendFilter } from './AddFriendFilter'
 
 interface AddFriendProps {
 	currentUserId: string
@@ -20,6 +19,7 @@ export const AddFriend = ({ currentUserId }: AddFriendProps) => {
 	const [users, setUsers] = useState<User[]>([])
 	const [currentUser, setCurrentUser] = useState<User | null>(null)
 	const [invitations, setInvitations] = useState<Invitation[]>([])
+	const [filter, setFilter] = useState('all')
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [search, setSearch] = useState('')
@@ -50,7 +50,9 @@ export const AddFriend = ({ currentUserId }: AddFriendProps) => {
 		}
 		setUsers(fetchedUsers)
 	}
-
+	const getFilter = (filter: string) => {
+		setFilter(filter)
+	}
 	const friends = currentUser?.friends.map(friend => friend.friendId) || []
 
 	const filteredUsers = users.filter(user => {
@@ -69,6 +71,14 @@ export const AddFriend = ({ currentUserId }: AddFriendProps) => {
 
 	return (
 		<>
+			<div className='flex justify-between py-3'>
+				<Searchbar className='w-3/5' onSetSearch={setSearch} />
+				<AddFriendFilter
+					className=' min-w-[100px] sm:min-w-[130px] w-[20%]'
+					onGetFriendFilter={getFilter}
+				/>
+			</div>
+			<div className='h-[2px] w-full rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
 			{isPending && (
 				<div className='w-full flex justify-center'>
 					<LoadingSpinner />
@@ -77,10 +87,9 @@ export const AddFriend = ({ currentUserId }: AddFriendProps) => {
 			{!isPending && filteredUsers.length === 0 && (
 				<div className='w-full text-lg text-center mt-5'>No users found</div>
 			)}
+
 			{!isPending && filteredUsers.length > 0 && (
-				<div className='space-y-6 py-5'>
-					<Searchbar onSetSearch={setSearch} />
-					<div className='h-[2px] rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
+				<div className='space-y-6'>
 					<ul className=' divide-y-2'>
 						{currentUsers.map(user => (
 							<FriendsListItem
@@ -90,6 +99,7 @@ export const AddFriend = ({ currentUserId }: AddFriendProps) => {
 								currentUserId={currentUserId}
 								invitations={invitations}
 								onRefreshUsers={refreshUsersHandler}
+								filter={filter}
 							/>
 						))}
 					</ul>

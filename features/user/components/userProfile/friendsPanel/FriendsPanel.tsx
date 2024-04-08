@@ -10,8 +10,6 @@ import { auth } from '@/features/auth/config/auth'
 import { getUserById } from '@/features/user/actions'
 import { User } from '@/features/user/types/User'
 
-
-
 export const FriendsPanel = async () => {
 	const session = await auth()
 	if (!session || !session.user) {
@@ -29,8 +27,8 @@ export const FriendsPanel = async () => {
 			<h1 className='text-center w-full py-4 text-2xl font-bold border-b-2 border-violet-600'>
 				Friends
 			</h1>
-			<Tabs defaultValue='friends' className='w-[90%] my-2'>
-				<TabsList className='grid grid-cols-3  '>
+			<Tabs defaultValue='friends' className='w-[90%] my-2 '>
+				<TabsList className='grid grid-cols-3   '>
 					<TabsTrigger value='friends'>Friends</TabsTrigger>
 					<TabsTrigger value='requests'>Requests</TabsTrigger>
 					<TabsTrigger value='add'>Add</TabsTrigger>
