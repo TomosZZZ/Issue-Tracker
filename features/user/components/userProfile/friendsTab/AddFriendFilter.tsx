@@ -9,17 +9,17 @@ import {
 import React from 'react'
 
 interface AddFriendFilterProps {
-	onGetFriendFilter: (status: string) => void
+	onFriendFilterChange: (status: string) => void
 	className?: string
 }
 
 export const AddFriendFilter = (props: AddFriendFilterProps) => {
-	const { onGetFriendFilter, className = '' } = props
+	const { onFriendFilterChange, className = '' } = props
 	return (
 		<div className={`${className}`}>
 			<Select
 				onValueChange={value => {
-					onGetFriendFilter(value)
+					onFriendFilterChange(value)
 				}}
 				defaultValue='all'>
 				<SelectTrigger>

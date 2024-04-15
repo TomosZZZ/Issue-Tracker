@@ -5,10 +5,11 @@ import { Accordion } from '@/components/ui/accordion'
 import { IssuesListItem } from './IssuesListItem'
 import { useToast } from '@/components/ui/use-toast'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
-import { Searchbar, StatusFilter } from './issuesFilter'
+import { StatusFilter } from './issuesFilter'
 import { PaginationBar } from '@/shared'
 import { getIssues } from '@/features/issue/actions'
 import { Issue } from '../../types'
+import { Searchbar } from '@/shared'
 
 export const IssuesList = () => {
 	const [issues, setIssues] = useState<Issue[]>([])

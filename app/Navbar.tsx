@@ -9,12 +9,14 @@ import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { AvatarImage } from '@radix-ui/react-avatar'
+
+const LINKS = [
+	{ label: 'Profile', path: '/profile' },
+	{ label: 'Issues', path: '/issues' },
+]
+
 const Navbar = () => {
 	const currentPath = usePathname()
-	const links = [
-		{ label: 'Profile', path: '/profile' },
-		{ label: 'Issues', path: '/issues' },
-	]
 
 	const logoutHandler = async () => {
 		signOut()
@@ -29,7 +31,7 @@ const Navbar = () => {
 				</Link>
 				{session && (
 					<ul className='flex space-x-6'>
-						{links.map(link => (
+						{LINKS.map(link => (
 							<Link
 								className={classNames({
 									'text-zinc-900': currentPath === link.path,
@@ -46,14 +48,7 @@ const Navbar = () => {
 				)}
 			</div>
 			<div>
-				{!session && (
-					<Button>
-						<Link className='flex items-center space-x-2 ' href='/auth/login'>
-							<FaUser /> <p className='text-lg sm:text-2xl '>Login</p>
-						</Link>
-					</Button>
-				)}
-				{session && (
+				{session ? (
 					<div className='flex space-x-4'>
 						<Button onClick={logoutHandler} size={'sm'}>
 							Logout
@@ -72,6 +67,12 @@ const Navbar = () => {
 							</Avatar>
 						</Link>
 					</div>
+				) : (
+					<Button size={'sm'}>
+						<Link className='flex items-center space-x-2 ' href='/auth/login'>
+							<FaUser /> <p className='text-lg sm:text-2xl '>Login</p>
+						</Link>
+					</Button>
 				)}
 			</div>
 		</nav>

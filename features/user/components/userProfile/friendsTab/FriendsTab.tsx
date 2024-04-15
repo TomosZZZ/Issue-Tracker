@@ -10,7 +10,7 @@ import { auth } from '@/features/auth/config/auth'
 import { getUserById } from '@/features/user/actions'
 import { User } from '@/features/user/types/User'
 
-export const FriendsPanel = async () => {
+export const FriendsTab = async () => {
 	const session = await auth()
 	if (!session || !session.user) {
 		return <div>Something went wrong</div>

@@ -7,8 +7,10 @@ import { FaUser } from 'react-icons/fa'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { User } from '../../types'
 import { getUserById } from '../../actions'
+import { title } from 'process'
+import { ProfileDetailsItem } from './ProfileDetailsItem'
 
-export const AccountPanel = () => {
+export const AccountTab = () => {
 	const [user, setUser] = useState<User | null>()
 
 	const [isLoading, setIsLoading] = useState(true)
@@ -25,9 +27,21 @@ export const AccountPanel = () => {
 			setUser(user)
 		}
 		setIsLoading(true)
-		fetchUser().then().catch()
+		fetchUser()
+			.then()
+			.catch(err => (
+				<div>
+					<p className='my-5'>Something went wrong! No user found</p>
+				</div>
+			))
 		setIsLoading(false)
 	}, [currentUserId])
+
+	const profileDetails = [
+		{ title: 'ID', value: user?.id },
+		{ title: 'Name', value: user?.name },
+		{ title: 'Email', value: user?.email },
+	]
 	return (
 		<Card className='shadow-xl shadow-violet-300 flex  align-middle flex-col'>
 			<CardHeader>
@@ -63,18 +77,17 @@ export const AccountPanel = () => {
 									</Avatar>
 								</div>
 							</li>
-							<li className='flex justify-between py-3 '>
-								<p className='font-bold'>ID</p>
-								<p>{user.id}</p>
-							</li>
-							<li className='flex justify-between py-3 '>
-								<p className='font-bold'>Name</p>
-								<p>{user.name}</p>
-							</li>
-							<li className='flex justify-between py-3 '>
-								<p className='font-bold'>Email</p>
-								<p>{user.email}</p>
-							</li>
+							{profileDetails.map((item, index) => {
+								return (
+									item.value && (
+										<ProfileDetailsItem
+											key={index}
+											title={item.title}
+											value={item.value}
+										/>
+									)
+								)
+							})}
 						</ul>
 					)}
 				</CardContent>

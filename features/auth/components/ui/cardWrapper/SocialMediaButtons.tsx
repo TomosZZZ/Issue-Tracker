@@ -5,7 +5,7 @@ import { FaGithub } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { signIn } from 'next-auth/react'
 import { DEFAULT_LOGIN_REDIRECT } from '../../../config/routes'
-export const Social = () => {
+export const SocialMediaButtons = () => {
 	const loginHandler = (provider: 'google' | 'github') => {
 		signIn(provider, { callbackUrl: DEFAULT_LOGIN_REDIRECT })
 	}

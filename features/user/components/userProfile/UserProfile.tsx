@@ -1,11 +1,11 @@
 import React from 'react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { AccountPanel } from './AccountPanel'
-import { FriendsPanel } from './friendsPanel/FriendsPanel'
+import { AccountTab } from './AccountTab'
+import { FriendsTab } from './friendsTab/FriendsTab'
 import { FaUser, FaUsers, FaUserEdit, FaStarOfLife } from 'react-icons/fa'
-import { EditProfilePanel } from './EditProfilePanel'
-import { ChangePasswordPanel } from './ChangePasswordPanel'
+import { EditProfileTab } from './EditProfileTab'
+import { ChangePasswordTab } from './ChangePasswordTab'
 export const UserProfile = () => {
 	return (
 		<Tabs defaultValue='account' className='w-[90%] sm:w-3/4 lg:w-3/5 xl:w-1/2'>
@@ -40,16 +40,16 @@ export const UserProfile = () => {
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value='account'>
-				<AccountPanel />
+				<AccountTab />
 			</TabsContent>
 			<TabsContent value='friends'>
-				<FriendsPanel />
+				<FriendsTab />
 			</TabsContent>
 			<TabsContent value='edit'>
-				<EditProfilePanel />
+				<EditProfileTab />
 			</TabsContent>
 			<TabsContent value='password'>
-				<ChangePasswordPanel />
+				<ChangePasswordTab />
 			</TabsContent>
 		</Tabs>
 	)

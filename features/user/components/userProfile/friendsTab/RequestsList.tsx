@@ -7,17 +7,17 @@ import { RequestListItem } from './RequestListItem'
 import { Invitation } from '@/features/user/types/Invitation'
 import { getInvitationsById } from '@/features/user/actions'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
-import { PaginationBar, Searchbar } from '@/shared'
+import { PaginationBar } from '@/shared'
+import { paginationHandler } from '@/utils'
 
 interface RequestsListProps {
 	currentUser: User
 }
-
+const ITEMS_PER_PAGE = 5
 export const RequestsList = ({ currentUser }: RequestsListProps) => {
 	const [friendRequests, setFriendRequests] = useState<Invitation[]>([])
 	const [isPending, startTransition] = useTransition()
 
-	const [search, setSearch] = useState('')
 	const [currentPage, setCurrentPage] = useState(1)
 
 	useEffect(() => {
@@ -27,18 +27,26 @@ export const RequestsList = ({ currentUser }: RequestsListProps) => {
 				setFriendRequests(requests)
 			})
 		}
-		getRequests().then().catch()
+		getRequests()
+			.then()
+			.catch(err => {
+				return (
+					<div>
+						<p>{err.message || 'Something went wrong'}</p>
+					</div>
+				)
+			})
 	}, [currentUser.id])
 
 	const refreshRequestsHandler = async (id: string) => {
 		setFriendRequests(friendRequests.filter(request => request.id !== id))
 	}
 
-	const itemsPerPage = 5
-	const lastItemIndex = currentPage * itemsPerPage
-	const firstItemIndex = lastItemIndex - itemsPerPage
-
-	const currentRequests = friendRequests.slice(firstItemIndex, lastItemIndex)
+	const currentRequests = paginationHandler({
+		paginatedItems: friendRequests,
+		currentPage,
+		itemsPerPage: ITEMS_PER_PAGE,
+	})
 
 	return (
 		<>
@@ -62,9 +70,9 @@ export const RequestsList = ({ currentUser }: RequestsListProps) => {
 					))}
 				</ul>
 			)}
-			{friendRequests.length > itemsPerPage && (
+			{friendRequests.length > ITEMS_PER_PAGE && (
 				<PaginationBar
-					itemsPerPage={itemsPerPage}
+					itemsPerPage={ITEMS_PER_PAGE}
 					currentPage={currentPage}
 					setCurrentPage={setCurrentPage}
 					totalItems={friendRequests.length}

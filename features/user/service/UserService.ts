@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs'
 import { userRepository } from './../repository'
 import { z } from 'zod'
 import { EditPasswordSchema } from '../schemas'
+import { ChangePasswordDto, EditUserDto } from '../dto'
 
 export class UserService {
 	private async validatePassword(password: string, hashedPassword: string) {
@@ -88,7 +89,7 @@ export class UserService {
 	async getUserById(id: string) {
 		return await userRepository.getUserById(id)
 	}
-	async editUser(data: { name: string; image: string }, id: string) {
+	async editUser(data: EditUserDto, id: string) {
 		return await userRepository.editUser(data, id)
 	}
 
@@ -99,9 +100,7 @@ export class UserService {
 		return await userRepository.addFriend(userId, friendId)
 	}
 
-	async changePassword(
-		data: z.infer<typeof EditPasswordSchema> & { id: string }
-	) {
+	async changePassword(data: ChangePasswordDto) {
 		return await userRepository.changePassword(data)
 	}
 }

@@ -24,10 +24,12 @@ import { useSearchParams } from 'next/navigation'
 
 type LoginFormData = z.infer<typeof LoginSchema>
 
+const AUTH_ACCOUNT_NOT_LINKED_ERROR_CODE = 'OAuthAccountNotLinked'
+
 export const LoginForm = () => {
 	const searchParams = useSearchParams()
 	const urlError =
-		searchParams.get('error') === 'OAuthAccountNotLinked'
+		searchParams.get('error') === AUTH_ACCOUNT_NOT_LINKED_ERROR_CODE
 			? 'Email already in use with diffrent provider'
 			: ''
 	const [success, setSuccess] = useState('')

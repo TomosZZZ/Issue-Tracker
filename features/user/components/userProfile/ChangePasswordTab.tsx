@@ -24,7 +24,7 @@ import { useToast } from '@/components/ui/use-toast'
 
 type ChangePasswordData = z.infer<typeof EditPasswordSchema>
 
-export const ChangePasswordPanel = () => {
+export const ChangePasswordTab = () => {
 	const [password, setPassword] = useState<string | null>('')
 	const [isFetchPasswordPending, startFetchPasswordTransition] = useTransition()
 
@@ -60,17 +60,6 @@ export const ChangePasswordPanel = () => {
 	}, [currentUserId])
 
 	const onSubmit = async (data: ChangePasswordData) => {
-		if (!password) return
-		const oldPasswordIsValid = await bcrypt.compare(data.password, password)
-		if (!oldPasswordIsValid) {
-			toast({
-				title: 'Ooops! Something went wrong',
-				description: 'Old password is incorrect',
-				variant: 'destructive',
-			})
-			reset()
-			return
-		}
 		if (data.newPassword === data.password) {
 			toast({
 				title: 'Ooops! Something went wrong',
@@ -89,16 +78,16 @@ export const ChangePasswordPanel = () => {
 						description: data.success || 'Password changed successfully',
 					})
 				}
+				signOut()
+				reset()
 			})
 			.catch(error => {
 				toast({
 					title: 'Ooops! Something went wrong',
-					description: error || 'Password change failed',
+					description: error.message || 'Password change failed',
 					variant: 'destructive',
 				})
 			})
-		reset()
-		signOut()
 	}
 	return (
 		<Card className='shadow-xl shadow-violet-300 flex  align-middle flex-col'>
@@ -107,11 +96,6 @@ export const ChangePasswordPanel = () => {
 					Edit Profile
 				</h1>
 			</CardHeader>
-			{!isFetchPasswordPending && password === '' && (
-				<h3 className='text-center text-destructive text-lg my-5'>
-					Could not fetch profile data
-				</h3>
-			)}
 			{!isFetchPasswordPending && password === null && (
 				<h3 className='text-center text-destructive text-lg my-5'>
 					Can&apos;t change password. You are logged in with Google or Github.

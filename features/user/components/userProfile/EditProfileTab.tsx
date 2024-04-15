@@ -24,7 +24,7 @@ import { useToast } from '@/components/ui/use-toast'
 
 type EditProfileFormData = z.infer<typeof EditProfileSchema>
 
-export const EditProfilePanel = () => {
+export const EditProfileTab = () => {
 	const [user, setUser] = useState<User | null>()
 	const [isFetchUserPending, startFetchUserTransition] = useTransition()
 
@@ -38,7 +38,7 @@ export const EditProfilePanel = () => {
 		formState: { errors },
 	} = form
 
-	const { data: session, update } = useSession()
+	const { data: session } = useSession()
 	const currentUserId = session?.user?.id
 
 	useEffect(() => {
@@ -63,11 +63,7 @@ export const EditProfilePanel = () => {
 					title: 'Success!!',
 					description: resData || 'Profile updated successfully',
 				})
-				update()
-				signIn('credentials', {
-					...session,
-					user: { ...session.user, ...data },
-				})
+
 				location.reload()
 			})
 			.catch(err => {

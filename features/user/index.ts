@@ -1,6 +1,1 @@
 export * from './components'
-export * from './repository'
-export * from './service'
-export * from './actions'
-export * from './types'
-export * from './schemas'

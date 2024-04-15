@@ -34,8 +34,16 @@ export const RequestListItem = ({
 			setSender(sender)
 		}
 
-		getSender().then().catch()
-	}, [senderId])
+		getSender()
+			.then()
+			.catch(err => {
+				toast({
+					title: 'Error',
+					description: err.message || 'Something went wrong',
+					duration: 3000,
+				})
+			})
+	}, [senderId, toast])
 
 	const rejectInvitationHandler = () => {
 		startRejectTransition(() => {
@@ -47,6 +55,7 @@ export const RequestListItem = ({
 							description: data.success || 'Invitation deleted',
 							duration: 3000,
 						})
+						onRefreshRequests(id)
 					}
 				})
 				.catch(err => {
@@ -55,10 +64,8 @@ export const RequestListItem = ({
 						description: err.message || 'Something went wrong',
 						duration: 3000,
 					})
-					return
 				})
 		})
-		onRefreshRequests(id)
 	}
 
 	const acceptInvitationHandler = () => {
@@ -71,7 +78,6 @@ export const RequestListItem = ({
 						description: 'Something went wrong',
 						duration: 3000,
 					})
-					return
 				})
 			addFriend(currentUser.id, senderId)
 				.then(data => {
@@ -81,6 +87,7 @@ export const RequestListItem = ({
 							description: data.success || 'Friend added',
 							duration: 3000,
 						})
+						onRefreshRequests(id)
 					}
 				})
 				.catch(err => {
@@ -91,17 +98,11 @@ export const RequestListItem = ({
 					})
 				})
 		})
-		onRefreshRequests(id)
 	}
 
 	return (
 		<li className='flex justify-between py-3'>
-			{!sender && (
-				<div className='flex justify-center w-full'>
-					<LoadingSpinner />
-				</div>
-			)}
-			{sender && (
+			{sender ? (
 				<>
 					<div className='flex items-center space-x-5'>
 						<Avatar className='w-[30px] h-[30px] sm:w-[40px] sm:h-[40px]'>
@@ -129,6 +130,10 @@ export const RequestListItem = ({
 						</Button>
 					</div>
 				</>
+			) : (
+				<div className='flex justify-center w-full'>
+					<LoadingSpinner />
+				</div>
 			)}
 		</li>
 	)

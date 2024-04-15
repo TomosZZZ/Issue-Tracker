@@ -6,16 +6,14 @@ import { getUserById, getUsers } from '@/features/user/actions'
 import { User } from '@/features/user/types/User'
 import { FriendsListItem } from './FriendsListItem'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
-import { Invitation } from '@prisma/client'
+
 import { PaginationBar, Searchbar } from '@/shared'
-import { Search } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { paginationHandler } from '@/utils'
 
-interface FriendsListProps {
-	currentUserId: string
-	requests?: Invitation[]
-}
+const ITEMS_PER_PAGE = 5
 
-export const FriendsList = ({ currentUserId }: FriendsListProps) => {
+export const FriendsList = () => {
 	const [friends, setFriends] = useState<User[]>([])
 	const [loading, setLoading] = useState(true)
 
@@ -23,9 +21,13 @@ export const FriendsList = ({ currentUserId }: FriendsListProps) => {
 
 	const [currentPage, setCurrentPage] = useState(1)
 
+	const { data: session } = useSession()
+	const currentUserId = session?.user?.id
+
 	useEffect(() => {
 		const getFriends = async () => {
 			setLoading(true)
+			if (!currentUserId) return
 			const currentUser = await getUserById(currentUserId)
 			if (currentUser) {
 				const friendsId = currentUser.friends.map(friend => friend.friendId)
@@ -35,10 +37,19 @@ export const FriendsList = ({ currentUserId }: FriendsListProps) => {
 			}
 			setLoading(false)
 		}
-		getFriends().then().catch()
+		getFriends()
+			.then()
+			.catch(err => {
+				return (
+					<div>
+						<p>{err.message || 'Something went wrong'}</p>
+					</div>
+				)
+			})
 	}, [currentUserId])
 
 	const refreshFriendsHandler = async () => {
+		if (!currentUserId) return
 		const currentUser = await getUserById(currentUserId)
 		if (currentUser) {
 			const friendsId = currentUser.friends.map(friend => friend.friendId)
@@ -52,11 +63,11 @@ export const FriendsList = ({ currentUserId }: FriendsListProps) => {
 		return friend.name?.toLowerCase().includes(search.toLowerCase())
 	})
 
-	const itemsPerPage = 5
-	const lastItemIndex = currentPage * itemsPerPage
-	const firstItemIndex = lastItemIndex - itemsPerPage
-
-	const currentFriends = filteredFriends.slice(firstItemIndex, lastItemIndex)
+	const currentFriends = paginationHandler<User>({
+		currentPage,
+		itemsPerPage: ITEMS_PER_PAGE,
+		paginatedItems: filteredFriends,
+	})
 
 	return (
 		<>
@@ -65,10 +76,12 @@ export const FriendsList = ({ currentUserId }: FriendsListProps) => {
 					<LoadingSpinner />
 				</div>
 			)}
-			{!friends && !loading && <div>No friends found</div>}
-			{friends && (
+			{friends.length == 0 && !loading && (
+				<div className='text-center text-lg my-5'>No friends found</div>
+			)}
+			{friends.length > 0 && currentUserId && (
 				<div className='space-y-6 py-5'>
-					<Searchbar onSetSearch={setSearch} />
+					<Searchbar handleSearchChange={setSearch} />
 					<div className='h-[2px] rounded-sm mb-5 mt-5 opacity-30  bg-violet-500'></div>
 					<ul className=' divide-y-2'>
 						{currentFriends.map(user => (
@@ -83,9 +96,9 @@ export const FriendsList = ({ currentUserId }: FriendsListProps) => {
 					</ul>
 				</div>
 			)}
-			{filteredFriends.length > itemsPerPage && (
+			{filteredFriends.length > ITEMS_PER_PAGE && (
 				<PaginationBar
-					itemsPerPage={itemsPerPage}
+					itemsPerPage={ITEMS_PER_PAGE}
 					currentPage={currentPage}
 					setCurrentPage={setCurrentPage}
 					totalItems={filteredFriends.length}

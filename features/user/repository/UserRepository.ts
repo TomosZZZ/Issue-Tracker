@@ -2,6 +2,7 @@ import db from '@/prisma/db'
 import bcrypt from 'bcryptjs'
 import { EditPasswordSchema } from '../schemas'
 import { z } from 'zod'
+import { ChangePasswordDto, EditUserDto } from '../dto'
 export class UserRepository {
 	async getUserByEmail(email: string) {
 		return db.user.findUnique({
@@ -52,7 +53,7 @@ export class UserRepository {
 
 		return users
 	}
-	async editUser(data: { name: string; image: string }, id: string) {
+	async editUser(data: EditUserDto, id: string) {
 		const response = await db.user.update({
 			data: {
 				image: data.image,
@@ -115,7 +116,7 @@ export class UserRepository {
 		newPassword,
 		passwordConfirmation,
 		id,
-	}: z.infer<typeof EditPasswordSchema> & { id: string }) {
+	}: ChangePasswordDto) {
 		const user = await this.getUserById(id)
 		if (!user) {
 			return { error: 'User not found' }
