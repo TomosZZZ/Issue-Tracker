@@ -3,7 +3,7 @@ import React, { useEffect, useState, useTransition } from 'react'
 import { EditIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { set, z } from 'zod'
 import {
 	Form,
 	FormControl,
@@ -29,9 +29,11 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Issue } from '../types'
 import { getIssue, editIssue } from '@/features/issue/actions'
 import { useToast } from '@/components/ui/use-toast'
-
+import { MultiSelect } from '@/shared/components/MultiSelect'
+import { getUsers } from '@/features/user/actions'
+import { User } from '@/features/user/types'
+// import { EditIssueFormData } from '../types'
 type EditIssueFormData = z.infer<typeof EditIssueSchema>
-
 export const EditIssueForm = () => {
 	const searchParams = useSearchParams()
 	const issueId = searchParams.get('id') as string
@@ -39,15 +41,26 @@ export const EditIssueForm = () => {
 
 	const [error, setError] = useState('')
 	const [issue, setIssue] = useState<Issue>()
-
+	const [users, setUsers] = useState<User[]>([])
 	const [isPending, startTransition] = useTransition()
-
+	const [isUsersPending, setUsersPending] = useState(false)
 	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
 
 	const { toast } = useToast()
 	const router = useRouter()
+
+	const issueUsersIds = issue?.users.map(user => user.userId)
+	const issueUsers = users.filter(user => issueUsersIds?.includes(user.id))
+	const creator = users.find(user => user.id === issue?.creatorId)
+	const creatorFriendsIds = creator?.friends.map(friend => friend.friendId)
+	const creatorFriends = users.filter(user =>
+		creatorFriendsIds?.includes(user.id)
+	)
+	const friendsSelectOptions = creatorFriends?.map(friend => {
+		return { label: friend.name || '', value: friend.id }
+	})
 
 	const {
 		handleSubmit,
@@ -59,7 +72,12 @@ export const EditIssueForm = () => {
 		if (!issueId) {
 			setError('Id param in url is missing')
 		}
-
+		const fetchUsers = async () => {
+			setUsersPending(true)
+			const users = await getUsers()
+			setUsers(users)
+			setUsersPending(false)
+		}
 		const fetchIssue = async () => {
 			startTransition(async () => {
 				setError('')
@@ -74,12 +92,16 @@ export const EditIssueForm = () => {
 		fetchIssue().catch(error =>
 			setError(error.toString() || 'Something went wrong')
 		)
+		fetchUsers().catch(error =>
+			setError(error.toString() || 'Something went wrong')
+		)
 	}, [issueId, intIssueId])
 
 	const onSubmit = async (data: EditIssueFormData) => {
+		const submittedUsers = data.users?.map(user => ({ userId: user.value }))
 		startTransition(async () => {
 			setError('')
-			editIssue(intIssueId, data)
+			editIssue(intIssueId, { ...data, users: submittedUsers || [] })
 				.then(res => {
 					if (res) {
 						toast({
@@ -111,7 +133,7 @@ export const EditIssueForm = () => {
 					<p className=' text-xl'>{error.toString()}</p>
 				</div>
 			)}
-			{!isPending && !error && issue && (
+			{!error && issue && (
 				<Form {...form}>
 					<form
 						className='p-4 w-3/4 flex flex-col space-y-8 '
@@ -196,6 +218,25 @@ export const EditIssueForm = () => {
 								</FormItem>
 							)}
 						/>
+						{!isUsersPending ? (
+							<MultiSelect
+								label='Friends'
+								name='users'
+								isMulti={true}
+								control={control}
+								isSearchable={true}
+								defaultValue={issueUsers.map(user => ({
+									label: user.name,
+									value: user.id,
+								}))}
+								options={friendsSelectOptions}
+							/>
+						) : (
+							<div>
+								<p>Friends are being fetched...</p>
+							</div>
+						)}
+
 						<div className='text-center mt-4'>
 							<Button
 								className=' bg-violet-600  text-white text-md sm:text-lg font-medium hover:bg-violet-800'
