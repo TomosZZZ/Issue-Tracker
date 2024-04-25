@@ -3,21 +3,21 @@
 import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card'
 import { BottomButton } from './BottomButton'
 import { Header } from './Header'
-import { Social } from './SocialMediaButtons'
+import { SocialMediaButtons } from './SocialMediaButtons'
 
 interface CardWrapperProps {
 	children: React.ReactNode
 	headerLabel: string
-	backButtonLabel: string
-	backButtonHref: string
+	bottomButtonLabel: string
+	bottomButtonHref: string
 	showSocial?: boolean
 }
 
 export const CardWrapper = ({
 	children,
 	headerLabel,
-	backButtonHref,
-	backButtonLabel,
+	bottomButtonHref,
+	bottomButtonLabel,
 	showSocial,
 }: CardWrapperProps) => {
 	return (
@@ -28,11 +28,11 @@ export const CardWrapper = ({
 			<CardContent>{children}</CardContent>
 			{showSocial && (
 				<CardFooter>
-					<Social />
+					<SocialMediaButtons />
 				</CardFooter>
 			)}
 			<CardFooter>
-				<BottomButton href={backButtonHref} label={backButtonLabel} />
+				<BottomButton href={bottomButtonHref} label={bottomButtonLabel} />
 			</CardFooter>
 		</Card>
 	)

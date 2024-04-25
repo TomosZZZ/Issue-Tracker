@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useTransition } from 'react'
-import { CardWrapper } from './cardWrapper'
+import { CardWrapper } from './ui/cardWrapper'
 import {
 	Form,
 	FormControl,
@@ -20,10 +20,18 @@ import { LoginSchema } from '../schemas/LoginSchema'
 import { Button } from '@/components/ui/button'
 import { ErrorMessage, SuccessMessage } from './ui'
 import { login } from '@/features/auth/actions'
+import { useSearchParams } from 'next/navigation'
 
 type LoginFormData = z.infer<typeof LoginSchema>
 
+const AUTH_ACCOUNT_NOT_LINKED_ERROR_CODE = 'OAuthAccountNotLinked'
+
 export const LoginForm = () => {
+	const searchParams = useSearchParams()
+	const urlError =
+		searchParams.get('error') === AUTH_ACCOUNT_NOT_LINKED_ERROR_CODE
+			? 'Email already in use with diffrent provider'
+			: ''
 	const [success, setSuccess] = useState('')
 	const [error, setError] = useState('')
 	const [isPending, startTransition] = useTransition()
@@ -44,8 +52,8 @@ export const LoginForm = () => {
 						setSuccess(data.success)
 					}
 				})
-				.catch(erorr => {
-					setError(error || 'Something went wrong')
+				.catch(error => {
+					setError(error.message || 'Something went wrong')
 				})
 		})
 	}
@@ -53,8 +61,8 @@ export const LoginForm = () => {
 	return (
 		<CardWrapper
 			headerLabel='Welcome back'
-			backButtonLabel="Don't have an account?"
-			backButtonHref='/auth/register'
+			bottomButtonLabel="Don't have an account?"
+			bottomButtonHref='/auth/register'
 			showSocial>
 			<Form {...form}>
 				<form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
@@ -88,7 +96,7 @@ export const LoginForm = () => {
 					/>
 					<div>
 						<SuccessMessage message={success} />
-						<ErrorMessage message={error} />
+						<ErrorMessage message={error || urlError} />
 					</div>
 					<Button disabled={isPending} type='submit' className='w-full'>
 						Login
