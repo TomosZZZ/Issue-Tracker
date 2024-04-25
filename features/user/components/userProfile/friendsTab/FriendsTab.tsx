@@ -34,7 +34,7 @@ export const FriendsTab = async () => {
 					<TabsTrigger value='add'>Add</TabsTrigger>
 				</TabsList>
 				<TabsContent value='friends'>
-					<FriendsList currentUserId={(currentUser as User).id} />
+					<FriendsList />
 				</TabsContent>
 				<TabsContent value='requests'>
 					<RequestsList currentUser={currentUser} />
