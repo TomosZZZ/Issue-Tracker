@@ -8,4 +8,5 @@ export const CreateIssueSchema = z.object({
 	description: z
 		.string()
 		.min(1, 'Description must contain at least 1 character'),
+	users: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
 })

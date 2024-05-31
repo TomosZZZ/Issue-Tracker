@@ -9,4 +9,5 @@ export const EditIssueSchema = z.object({
 		.string()
 		.min(1, 'Description must contain at least 1 character'),
 	status: z.nativeEnum(Status),
+	users: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
 })

@@ -13,6 +13,7 @@ import { AvatarImage } from '@radix-ui/react-avatar'
 const LINKS = [
 	{ label: 'Profile', path: '/profile' },
 	{ label: 'Issues', path: '/issues' },
+	{ label: 'My Issues', path: '/issues/my' },
 ]
 
 const Navbar = () => {
@@ -34,7 +35,8 @@ const Navbar = () => {
 						{LINKS.map(link => (
 							<Link
 								className={classNames({
-									'text-zinc-900': currentPath === link.path,
+									'text-zinc-900 border-b-2 border-zinc-900 ':
+										currentPath === link.path,
 									'text-zinc-500': currentPath !== link.path,
 									'hover:text-zinc-800 transition-colors font-medium text-xl':
 										true,
@@ -69,8 +71,8 @@ const Navbar = () => {
 					</div>
 				) : (
 					<Button size={'sm'}>
-						<Link className='flex items-center space-x-2 ' href='/auth/login'>
-							<FaUser /> <p className='text-lg sm:text-2xl '>Login</p>
+						<Link className='flex items-center gap-2 ' href='/auth/login'>
+							<FaUser /> <p className='text-lg  '>Login</p>
 						</Link>
 					</Button>
 				)}

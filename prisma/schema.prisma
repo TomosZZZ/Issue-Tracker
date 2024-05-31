@@ -17,23 +17,11 @@ model Issue {
   status      Status   @default(OPEN)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  creatorId   String
+  users       UserIssues[]
 }
 
 
-
-// model User {
-//   id                  String       @id @default(cuid())
-//   name                String?
-//   email               String?      @unique
-//   image               String?
-//   password            String?
-//   emailVerified       DateTime?
-//   accounts            Account[]
-//   friends             User[]       @relation("Friends")
-//   friendOf            User[]       @relation("Friends")
-//   sentInvitations     Invitation[] @relation("SentInvitations")
-//   receivedInvitations Invitation[] @relation("ReceivedInvitations")
-// }
 model User {
   id                  String       @id @default(cuid())
   name                String?
@@ -46,6 +34,18 @@ model User {
   friendOf            UserFriends[] @relation("Friend")      
   sentInvitations     Invitation[] @relation("SentInvitations")
   recievedInvitations Invitation[] @relation("RecievedInvitations")
+  issues              UserIssues[]
+}
+
+model UserIssues {
+  userId String
+  issueId Int
+  User   User  @relation(fields: [userId], references: [id])
+  Issue  Issue @relation(fields: [issueId], references: [id])
+  @@id([userId, issueId])
+  @@index([userId])
+  @@index([issueId])
+
 }
 
 model UserFriends {
