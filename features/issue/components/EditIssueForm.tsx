@@ -3,7 +3,7 @@ import React, { useEffect, useState, useTransition } from 'react'
 import { EditIssueSchema } from '../schemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { set, z } from 'zod'
+import { z } from 'zod'
 import {
 	Form,
 	FormControl,
@@ -32,7 +32,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { MultiSelect } from '@/shared/components/MultiSelect'
 import { getUsers } from '@/features/user/actions'
 import { User } from '@/features/user/types'
-// import { EditIssueFormData } from '../types'
+
 type EditIssueFormData = z.infer<typeof EditIssueSchema>
 export const EditIssueForm = () => {
 	const searchParams = useSearchParams()
@@ -43,7 +43,7 @@ export const EditIssueForm = () => {
 	const [issue, setIssue] = useState<Issue>()
 	const [users, setUsers] = useState<User[]>([])
 	const [isPending, startTransition] = useTransition()
-	const [isUsersPending, setUsersPending] = useState(false)
+	const [areUsersPending, setUsersPending] = useState(false)
 	const form = useForm<EditIssueFormData>({
 		resolver: zodResolver(EditIssueSchema),
 	})
@@ -53,11 +53,14 @@ export const EditIssueForm = () => {
 
 	const issueUsersIds = issue?.users.map(user => user.userId)
 	const issueUsers = users.filter(user => issueUsersIds?.includes(user.id))
+
+
 	const creator = users.find(user => user.id === issue?.creatorId)
 	const creatorFriendsIds = creator?.friends.map(friend => friend.friendId)
 	const creatorFriends = users.filter(user =>
 		creatorFriendsIds?.includes(user.id)
 	)
+
 	const friendsSelectOptions = creatorFriends?.map(friend => {
 		return { label: friend.name || '', value: friend.id }
 	})
@@ -101,7 +104,7 @@ export const EditIssueForm = () => {
 		const submittedUsers = data.users?.map(user => ({ userId: user.value }))
 		startTransition(async () => {
 			setError('')
-			editIssue(intIssueId, { ...data, users: submittedUsers || [] })
+			editIssue(intIssueId, { ...data, users: submittedUsers ?? [] })
 				.then(res => {
 					if (res) {
 						toast({
@@ -218,7 +221,7 @@ export const EditIssueForm = () => {
 								</FormItem>
 							)}
 						/>
-						{!isUsersPending ? (
+						{!areUsersPending ? (
 							<MultiSelect
 								label='Friends'
 								name='users'

@@ -46,7 +46,7 @@ export const NewIssueForm = () => {
 			const currentUserFriends =
 				users
 					.find(user => user.id === currentUserId)
-					?.friends.map(friend => friend.friendId) || []
+					?.friends.map(friend => friend.friendId) ?? []
 			const friends = users.filter(user => currentUserFriends.includes(user.id))
 			setFriends(friends)
 		}

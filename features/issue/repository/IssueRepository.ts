@@ -30,7 +30,7 @@ export class IssueRepository {
 				status,
 				users: {
 					createMany: {
-						data: users || [],
+						data: users ?? [],
 					},
 				},
 				creatorId,
@@ -57,7 +57,7 @@ export class IssueRepository {
 			include: { users: true },
 		})
 		if (!issue) return null
-		const usersToDelete = issue.users.filter(
+		const usersToDeleteFromRelation = issue.users.filter(
 			issueUser => !users.map(user => user.userId).includes(issueUser.userId)
 		)
 
@@ -70,7 +70,7 @@ export class IssueRepository {
 				description,
 				status,
 				users: {
-					deleteMany: usersToDelete.map(user => ({
+					deleteMany: usersToDeleteFromRelation.map(user => ({
 						userId: user.userId,
 						issueId: id,
 					})),
